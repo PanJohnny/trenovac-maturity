@@ -1,0 +1,8 @@
+.linkpane {
+    -fx-background-color: #F0F0F0;
+    -fx-padding: 0;
+    -fx-border-color: #CCCCCC;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
