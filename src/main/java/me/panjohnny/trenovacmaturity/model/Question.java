@@ -40,13 +40,13 @@ public record Question(int number, String text, Image image, String region_id, L
     }
 
     public String serialize() {
-        return number + "|" + text.replace("\n", "\\n") + "|" + region_id + "|" + String.join(",", tags);
+        return number + "|" + text.replace("\n", "\\n").replace("|", "\\|") + "|" + region_id + "|" + String.join(",", tags);
     }
 
     public static Question deserialize(String line) {
-        String[] parts = line.split("\\|", 4);
+        String[] parts = line.split("(?<!\\\\)\\|", 4);
         int number = Integer.parseInt(parts[0]);
-        String text = parts[1].replace("\\n", "\n");
+        String text = parts[1].replace("\\n", "\n").replace("\\|", "|");
         String region_id = parts[2];
         List<String> tags = new ArrayList<>();
         if (parts.length > 3 && !parts[3].isEmpty()) {

@@ -28,7 +28,7 @@ public class WelcomeController implements BaseController {
                 temp.setText(meta);
 
                 temp.setOnAction(event -> {
-                    System.out.println("Opening " + opened);
+                    application.openExamZIP(new File(opened));
                 });
             }
         }

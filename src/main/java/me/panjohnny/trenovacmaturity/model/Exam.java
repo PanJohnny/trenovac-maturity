@@ -44,4 +44,8 @@ public class Exam {
         }
         return new Exam(questions);
     }
+
+    public int length() {
+        return questions.size();
+    }
 }

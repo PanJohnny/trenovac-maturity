@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import me.panjohnny.trenovacmaturity.archive.ArchiveLoader;
 import me.panjohnny.trenovacmaturity.fx.BaseController;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.pdf.PDFExtractor;
@@ -55,9 +56,25 @@ public class MaturitaApplication extends Application {
     public void loadPDF(File file) {
         try {
             loadingScreen();
-            exam = extractor.parse(file);
-            changeScene("home-view.fxml");
+            extractor.parseAsync(file).handleAsync((exam, t) -> {
+                if (t != null) {
+                    throw new RuntimeException(t);
+                }
+                this.exam = exam;
+                System.out.println("exam loaded");
+                homeScreen();
+                return null;
+            });
+
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void homeScreen() {
+        try {
+            changeScene("home-view.fxml");
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -96,6 +113,8 @@ public class MaturitaApplication extends Application {
 
     public void openExamZIP(File file) {
         loadingScreen();
+        exam = ArchiveLoader.loadExamFromArchive(file);
+        homeScreen();
     }
 
     public RetentionHelper getRetentionHelper() {

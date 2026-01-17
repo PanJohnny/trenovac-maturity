@@ -15,25 +15,13 @@ public class MaturitaController implements BaseController{
     private Label welcomeText;
 
     @FXML
+    private Label infoLabel;
+
+    @FXML
     private Canvas canvas;
 
     private final int CANVAS_MAX_WIDTH = 1000;
     private final int CANVAS_MAX_HEIGHT = 700;
-
-    @FXML
-    protected void onHelloButtonClick() {
-        PDFExtractor extractor = new PDFExtractor();
-
-        try {
-            exam = extractor.parse(new File("MA_2025p_TS.pdf"));
-            //exam = Exam.deserialize(Files.readString(Path.of("exam.txt")));
-            welcomeText.setText("PDF Loaded");
-
-            redraw();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @FXML
     protected void onPrevClick() {
@@ -77,6 +65,8 @@ public class MaturitaController implements BaseController{
         } else {
             welcomeText.setText("");
         }
+
+        infoLabel.setText(exam.getCurrentQuestion().number() + "/" + exam.length());
     }
 
     private MaturitaApplication application;

@@ -2,6 +2,7 @@ package me.panjohnny.trenovacmaturity.image;
 
 import javafx.scene.image.Image;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.HashMap;
 
@@ -36,5 +37,7 @@ public class ImageCache {
         return cache.get(key);
     }
 
-
+    public void putImage(String key, byte[] data) {
+        cache.put(key, new Image(new ByteArrayInputStream(data)));
+    }
 }

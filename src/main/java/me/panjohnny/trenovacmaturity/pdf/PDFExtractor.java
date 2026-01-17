@@ -18,8 +18,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -27,6 +27,8 @@ import static me.panjohnny.trenovacmaturity.MaturitaApplication.relativeLocation
 
 public class PDFExtractor {
     public static final int DPI = 150;
+    public static final int MIN_REGION_HEIGHT = 50 * DPI / 150; // 80 pixels at 150 DPI
+    public static final int TABLE_Y_THRESHOLD = 10 * DPI / 150; // 10 pixels at 150 DPI
 
     public Exam parse(File file) throws IOException {
         File relative = relativeLocation.toFile();
@@ -66,6 +68,8 @@ public class PDFExtractor {
 
                 BufferedImage pageImage = renderer.renderImageWithDPI(pageIndex, DPI);
 
+                System.out.println("Page " + pageIndex);
+
                 List<Integer> horizontalLines = detectHorizontalLines(pageImage);
 
                 List<Rectangle> regions = createRegions(horizontalLines,
@@ -77,9 +81,6 @@ public class PDFExtractor {
 
                 for (int i = 0; i < regions.size(); i++) {
                     Rectangle region = regions.get(i);
-
-                    if (region.height < 150) // Minimální výška oblasti pro extrakci
-                        continue;
 
                     String regionName = "region_" + pageIndex + "_" + i;
 
@@ -141,20 +142,22 @@ public class PDFExtractor {
     private List<Integer> detectHorizontalLines(BufferedImage image) {
         List<Integer> lines = new ArrayList<>();
 
+        int lastLineY = -MIN_REGION_HEIGHT;
         loopHeight: for (int y = 0; y < image.getHeight(); y++) {
             int consecutiveBlackPixels = 0;
             for (int x = 0; x < image.getWidth(); x++) {
-                int rgb = image.getRGB(x, y);
-                int r = (rgb >> 16) & 0xff;
-                int g = (rgb >> 8) & 0xff;
-                int b = rgb & 0xff;
-                int brightness = (r + g + b) / 3;
-
-                if (brightness < 10) { // Prahová hodnota pro černou barvu
+                if (ImageUtil.isBlack(image, x, y)) {
                     consecutiveBlackPixels++;
                 } else {
-                    if (consecutiveBlackPixels > image.getWidth() * 0.7 && consecutiveBlackPixels < image.getWidth() * 0.77) {
-                        lines.add(y);
+                    if (consecutiveBlackPixels > image.getWidth() * 0.7 && consecutiveBlackPixels < image.getWidth() * 0.81) {
+                        // table check
+                        if (!ImageUtil.isBlack(image, x-1, y + TABLE_Y_THRESHOLD) && !ImageUtil.isBlack(image, x-1, y - TABLE_Y_THRESHOLD) && lastLineY + MIN_REGION_HEIGHT < y) {
+                            lines.add(y);
+                            lastLineY = y;
+                            System.out.println("Detected line at y=" + y);
+                        } else {
+                            System.out.println("Skipped line at y=" + y + " due to table detection.");
+                        }
                         continue loopHeight;
                     }
                     consecutiveBlackPixels = 0;
@@ -173,5 +176,15 @@ public class PDFExtractor {
         }
         regions.add(new Rectangle(0, prevY, width, height - prevY));
         return regions;
+    }
+
+    public CompletableFuture<Exam> parseAsync(File file) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return parse(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
