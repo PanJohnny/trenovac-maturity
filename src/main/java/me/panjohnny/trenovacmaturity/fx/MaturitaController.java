@@ -80,5 +80,21 @@ public class MaturitaController implements BaseController{
     @Override
     public void loadAppData() {
         exam = application.getExam();
+        redraw();
+    }
+
+    @FXML
+    public void openZIP() {
+        Actions.openZIP(application);
+    }
+
+    @FXML
+    public void openPDF() {
+        Actions.openPDF(application);
+    }
+
+    @FXML
+    public void openCERMAT() {
+        Actions.openCERMAT();
     }
 }

@@ -5,34 +5,75 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" prefHeight="600.0" prefWidth="720.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.MaturitaController">
+<VBox prefHeight="600.0" prefWidth="720.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.MaturitaController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
-   <HBox prefHeight="100.0" prefWidth="200.0">
+    <MenuBar>
+        <menus>
+            <Menu mnemonicParsing="false" text="File">
+                <items>
+               <MenuItem mnemonicParsing="false" onAction="#openZIP" text="Open ZIP" />
+               <MenuItem mnemonicParsing="false" onAction="#openPDF" text="Open PDF" />
+               <Menu mnemonicParsing="false" text="Open last">
+                 <items>
+                   <MenuItem disable="true" mnemonicParsing="false" text="filename" />
+                 </items>
+               </Menu>
+               <SeparatorMenuItem mnemonicParsing="false" />
+                    <MenuItem mnemonicParsing="false" text="Close exam" />
+               <MenuItem mnemonicParsing="false" text="Close app" />
+                </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+                <items>
+               <MenuItem mnemonicParsing="false" text="View metadata" />
+               <MenuItem mnemonicParsing="false" text="Open data folder" />
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <items>
+                    <MenuItem mnemonicParsing="false" onAction="#openCERMAT" text="Download exams" />
+                    <MenuItem mnemonicParsing="false" text="About" />
+                </items>
+            </Menu>
+        </menus>
+      <opaqueInsets>
+         <Insets />
+      </opaqueInsets>
+      <VBox.margin>
+         <Insets left="-20.0" right="-20.0" top="-20.0" />
+      </VBox.margin>
+    </MenuBar>
+    <HBox prefHeight="100.0" prefWidth="200.0">
+        <children>
+            <Label fx:id="infoLabel" />
+        </children>
+    </HBox>
+   <VBox prefHeight="100.0" prefWidth="200.0" alignment="CENTER">
       <children>
-         <Label fx:id="infoLabel" />
+          <Canvas fx:id="canvas" height="400.0" width="500.0" HBox.hgrow="ALWAYS" />
       </children>
-   </HBox>
-   <Canvas fx:id="canvas" height="400.0" width="500.0" />
-   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-      <children>
-         <Button fx:id="prev" mnemonicParsing="false" onAction="#onPrevClick" text="Prev" />
-         <Button fx:id="next" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onNextClick" text="Next" />
-         <Separator orientation="VERTICAL" prefHeight="200.0" />
-         <TextField promptText="Tags separated by ," />
-         <Separator orientation="VERTICAL" prefHeight="200.0" />
-         <Button mnemonicParsing="false" text="Show correct answer" />
-      </children>
-   </HBox>
-   <ScrollPane prefHeight="200.0" prefWidth="200.0">
-     <content>
-       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-            <children>
-            
-                <Label fx:id="welcomeText" />
-            </children>
-         </AnchorPane>
-     </content>
-   </ScrollPane>
+   </VBox>
+    <HBox spacing="20">
+        <children>
+            <Button mnemonicParsing="false" onAction="#onPrevClick" text="Prev" />
+            <Button mnemonicParsing="false" onAction="#onNextClick" text="Next" />
+            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <TextField promptText="Tags separated by ," disable="true" />
+            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <Button mnemonicParsing="false" text="Show correct answer" disable="true" />
+        </children>
+    </HBox>
+    <ScrollPane prefHeight="200.0" prefWidth="200.0">
+        <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                <children>
+
+                    <Label fx:id="welcomeText" />
+                </children>
+            </AnchorPane>
+        </content>
+    </ScrollPane>
 </VBox>

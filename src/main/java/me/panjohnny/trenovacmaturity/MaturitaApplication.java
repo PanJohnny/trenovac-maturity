@@ -1,6 +1,8 @@
 package me.panjohnny.trenovacmaturity;
 
+import atlantafx.base.theme.NordDark;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -32,23 +34,31 @@ public class MaturitaApplication extends Application {
         primaryStage = stage;
         changeScene("welcome-view.fxml");
         stage.setTitle("Trénovač maturity");
+        Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
         stage.show();
     }
 
-    public void changeScene(String resource) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(MaturitaApplication.class.getResource(resource));
-        Scene scene = new Scene(fxmlLoader.load(), 720, 580);
+    public void changeScene(String resource) {
+        Platform.runLater(() -> {
+            FXMLLoader fxmlLoader = new FXMLLoader(MaturitaApplication.class.getResource(resource));
+            Scene scene = null;
+            try {
+                scene = new Scene(fxmlLoader.load(), 720, 580);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
-        scene.getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
+            scene.getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
 
-        BaseController controller = fxmlLoader.getController();
-        if (controller != null) {
-            controller.setApplication(this);
-            controller.loadAppData();
-        }
+            BaseController controller = fxmlLoader.getController();
+            if (controller != null) {
+                controller.setApplication(this);
+                controller.loadAppData();
+            }
 
 
-        primaryStage.setScene(scene);
+            primaryStage.setScene(scene);
+        });
     }
 
     private Exam exam;
@@ -61,10 +71,9 @@ public class MaturitaApplication extends Application {
                     throw new RuntimeException(t);
                 }
                 this.exam = exam;
-                System.out.println("exam loaded");
-                homeScreen();
+                System.out.println("exam loaded from PDF");
                 return null;
-            });
+            }).thenRun(this::homeScreen);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -72,19 +81,11 @@ public class MaturitaApplication extends Application {
     }
 
     private void homeScreen() {
-        try {
-            changeScene("home-view.fxml");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        changeScene("home-view.fxml");
     }
 
     private void loadingScreen() {
-        try {
-            changeScene("loading.fxml");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        changeScene("loading.fxml");
     }
 
     public String getZIPMeta(File file) {
@@ -113,8 +114,14 @@ public class MaturitaApplication extends Application {
 
     public void openExamZIP(File file) {
         loadingScreen();
-        exam = ArchiveLoader.loadExamFromArchive(file);
-        homeScreen();
+        ArchiveLoader.loadExamFromArchiveAsync(file).handleAsync((exam, t) -> {
+            if (t != null) {
+                throw new RuntimeException(t);
+            }
+            this.exam = exam;
+            System.out.println("exam loaded from zip");
+            return null;
+        }).thenRun(this::homeScreen);
     }
 
     public RetentionHelper getRetentionHelper() {

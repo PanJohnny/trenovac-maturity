@@ -6,6 +6,7 @@ module me.panjohnny.trenovacmaturity {
     requires org.kordamp.ikonli.javafx;
     requires org.apache.pdfbox;
     requires java.desktop;
+    requires atlantafx.base;
 
     opens me.panjohnny.trenovacmaturity to javafx.fxml;
     exports me.panjohnny.trenovacmaturity;

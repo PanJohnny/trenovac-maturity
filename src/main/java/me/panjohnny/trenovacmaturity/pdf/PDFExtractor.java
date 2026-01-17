@@ -1,11 +1,10 @@
 package me.panjohnny.trenovacmaturity.pdf;
 
 import javafx.scene.image.Image;
-import me.panjohnny.trenovacmaturity.MaturitaApplication;
+import me.panjohnny.trenovacmaturity.fx.LoadingController;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.Question;
 import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.cos.ICOSVisitor;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.rendering.PDFRenderer;
@@ -26,9 +25,6 @@ import java.util.zip.ZipOutputStream;
 import static me.panjohnny.trenovacmaturity.MaturitaApplication.relativeLocation;
 
 public class PDFExtractor {
-    public static final int DPI = 150;
-    public static final int MIN_REGION_HEIGHT = 50 * DPI / 150; // 80 pixels at 150 DPI
-    public static final int TABLE_Y_THRESHOLD = 10 * DPI / 150; // 10 pixels at 150 DPI
 
     public Exam parse(File file) throws IOException {
         File relative = relativeLocation.toFile();
@@ -49,15 +45,18 @@ public class PDFExtractor {
         try (PDDocument doc = Loader.loadPDF(file)) {
             PDFRenderer renderer = new PDFRenderer(doc);
 
+            double approxProgressPerPage = 1.0 / (double) doc.getNumberOfPages();
+            double currentProgress = 0.0;
+
             LinkedHashMap<String, String> regionText = new LinkedHashMap<>();
             LinkedHashMap<String, Image> regionImages = new LinkedHashMap<>();
 
             PDFTextStripperByArea metaStripper = new PDFTextStripperByArea();
             metaStripper.setSortByPosition(true);
             metaStripper.addRegion("meta", new Rectangle(0, 0,
-                    (int) doc.getPage(0).getMediaBox().getWidth() * DPI / 72,
-                    (int) (doc.getPage(0).getMediaBox().getHeight() * DPI / 72 * 0.07)));
-            BufferedImage metaImage = renderer.renderImageWithDPI(0, DPI);
+                    (int) doc.getPage(0).getMediaBox().getWidth() * ImageUtil.DPI / 72,
+                    (int) (doc.getPage(0).getMediaBox().getHeight() * ImageUtil.DPI / 72 * 0.07)));
+            BufferedImage metaImage = renderer.renderImageWithDPI(0, ImageUtil.DPI);
             File metaFile = new File(relative, "meta.png");
             ImageIO.write(metaImage, "png", metaFile);
             metaStripper.extractRegions(doc.getPage(0));
@@ -66,15 +65,15 @@ public class PDFExtractor {
             for (int pageIndex = 1; pageIndex < doc.getNumberOfPages(); pageIndex++) {
                 PDPage page = doc.getPage(pageIndex);
 
-                BufferedImage pageImage = renderer.renderImageWithDPI(pageIndex, DPI);
+                BufferedImage pageImage = renderer.renderImageWithDPI(pageIndex, ImageUtil.DPI);
 
                 System.out.println("Page " + pageIndex);
 
-                List<Integer> horizontalLines = detectHorizontalLines(pageImage);
+                List<Integer> horizontalLines = ImageUtil.detectHorizontalLines(pageImage);
 
                 List<Rectangle> regions = createRegions(horizontalLines,
-                        (int) page.getMediaBox().getWidth() * DPI / 72,
-                        (int) page.getMediaBox().getHeight() * DPI / 72);
+                        (int) page.getMediaBox().getWidth() * ImageUtil.DPI / 72,
+                        (int) page.getMediaBox().getHeight() * ImageUtil.DPI / 72);
 
                 PDFTextStripperByArea stripper = new PDFTextStripperByArea();
                 stripper.setSortByPosition(true);
@@ -84,7 +83,7 @@ public class PDFExtractor {
 
                     String regionName = "region_" + pageIndex + "_" + i;
 
-                    stripper.addRegion(regionName, new Rectangle(region.x * 72 / DPI, region.y * 72 / DPI, region.width * 72 / DPI, region.height * 72 / DPI));
+                    stripper.addRegion(regionName, new Rectangle(region.x * 72 / ImageUtil.DPI, region.y * 72 / ImageUtil.DPI, region.width * 72 / ImageUtil.DPI, region.height * 72 / ImageUtil.DPI));
 
                     BufferedImage regionImage = pageImage.getSubimage(
                             region.x, region.y, region.width, region.height);
@@ -93,6 +92,9 @@ public class PDFExtractor {
                     ImageIO.write(regionImage, "png", ff);
 
                     regionImages.put(regionName, new Image(ff.toURI().toString()));
+
+                    currentProgress += approxProgressPerPage / (double) regions.size();
+                    LoadingController.setProgress(currentProgress);
                 }
 
                 stripper.extractRegions(page);
@@ -135,36 +137,10 @@ public class PDFExtractor {
 
             zip.close();
 
+            LoadingController.setProgress(1.0d);
+
             return exam;
         }
-    }
-
-    private List<Integer> detectHorizontalLines(BufferedImage image) {
-        List<Integer> lines = new ArrayList<>();
-
-        int lastLineY = -MIN_REGION_HEIGHT;
-        loopHeight: for (int y = 0; y < image.getHeight(); y++) {
-            int consecutiveBlackPixels = 0;
-            for (int x = 0; x < image.getWidth(); x++) {
-                if (ImageUtil.isBlack(image, x, y)) {
-                    consecutiveBlackPixels++;
-                } else {
-                    if (consecutiveBlackPixels > image.getWidth() * 0.7 && consecutiveBlackPixels < image.getWidth() * 0.81) {
-                        // table check
-                        if (!ImageUtil.isBlack(image, x-1, y + TABLE_Y_THRESHOLD) && !ImageUtil.isBlack(image, x-1, y - TABLE_Y_THRESHOLD) && lastLineY + MIN_REGION_HEIGHT < y) {
-                            lines.add(y);
-                            lastLineY = y;
-                            System.out.println("Detected line at y=" + y);
-                        } else {
-                            System.out.println("Skipped line at y=" + y + " due to table detection.");
-                        }
-                        continue loopHeight;
-                    }
-                    consecutiveBlackPixels = 0;
-                }
-            }
-        }
-        return lines;
     }
 
     private List<Rectangle> createRegions(List<Integer> lines, int width, int height) {
