@@ -1,7 +1,9 @@
 package me.panjohnny.trenovacmaturity.pdf;
 
-import javafx.scene.image.Image;
+import me.panjohnny.trenovacmaturity.fs.Archiver;
+import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
 import me.panjohnny.trenovacmaturity.fx.LoadingController;
+import me.panjohnny.trenovacmaturity.image.ImageCache;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.Question;
 import org.apache.pdfbox.Loader;
@@ -10,37 +12,18 @@ import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.text.PDFTextStripperByArea;
 
-import javax.imageio.ImageIO;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-import static me.panjohnny.trenovacmaturity.MaturitaApplication.relativeLocation;
-
-public class PDFExtractor {
+public class ExamPDFParser {
 
     public Exam parse(File file) throws IOException {
-        File relative = relativeLocation.toFile();
-
-        if (!relative.exists()) {
-            Files.createDirectories(relativeLocation);
-        } else {
-            var files = relative.listFiles();
-            if (files != null) {
-                for (File f : files) {
-                    if (!f.delete()) {
-                        System.getLogger("PDFExtractor").log(System.Logger.Level.WARNING, "Could not delete file: " + f.getAbsolutePath());
-                    }
-                }
-            }
-        }
+        TemporaryFileSystemManager.cleanup();
 
         try (PDDocument doc = Loader.loadPDF(file)) {
             PDFRenderer renderer = new PDFRenderer(doc);
@@ -49,18 +32,11 @@ public class PDFExtractor {
             double currentProgress = 0.0;
 
             LinkedHashMap<String, String> regionText = new LinkedHashMap<>();
-            LinkedHashMap<String, Image> regionImages = new LinkedHashMap<>();
 
-            PDFTextStripperByArea metaStripper = new PDFTextStripperByArea();
-            metaStripper.setSortByPosition(true);
-            metaStripper.addRegion("meta", new Rectangle(0, 0,
-                    (int) doc.getPage(0).getMediaBox().getWidth() * ImageUtil.DPI / 72,
-                    (int) (doc.getPage(0).getMediaBox().getHeight() * ImageUtil.DPI / 72 * 0.07)));
             BufferedImage metaImage = renderer.renderImageWithDPI(0, ImageUtil.DPI);
-            File metaFile = new File(relative, "meta.png");
-            ImageIO.write(metaImage, "png", metaFile);
-            metaStripper.extractRegions(doc.getPage(0));
-            String metaText = metaStripper.getTextForRegion("meta").trim();
+            TemporaryFileSystemManager.writeImageRegion("meta", metaImage);
+
+            String metaText = PDFUtil.extractMetaText(doc, 0.07);
 
             for (int pageIndex = 1; pageIndex < doc.getNumberOfPages(); pageIndex++) {
                 PDPage page = doc.getPage(pageIndex);
@@ -69,8 +45,10 @@ public class PDFExtractor {
 
                 System.out.println("Page " + pageIndex);
 
+                System.out.println("Detecting horizontal lines...");
                 List<Integer> horizontalLines = ImageUtil.detectHorizontalLines(pageImage);
 
+                System.out.println("Creating regions...");
                 List<Rectangle> regions = createRegions(horizontalLines,
                         (int) page.getMediaBox().getWidth() * ImageUtil.DPI / 72,
                         (int) page.getMediaBox().getHeight() * ImageUtil.DPI / 72);
@@ -78,6 +56,7 @@ public class PDFExtractor {
                 PDFTextStripperByArea stripper = new PDFTextStripperByArea();
                 stripper.setSortByPosition(true);
 
+                System.out.println("Processing regions...");
                 for (int i = 0; i < regions.size(); i++) {
                     Rectangle region = regions.get(i);
 
@@ -88,10 +67,12 @@ public class PDFExtractor {
                     BufferedImage regionImage = pageImage.getSubimage(
                             region.x, region.y, region.width, region.height);
 
-                    File ff = new File(relative, regionName + ".png");
-                    ImageIO.write(regionImage, "png", ff);
+                    System.out.println("Processing region " + regionName);
+                    regionImage = ImageUtil.removeWhitespace(regionImage);
 
-                    regionImages.put(regionName, new Image(ff.toURI().toString()));
+                    System.out.println("Writing region image " + regionName);
+
+                    TemporaryFileSystemManager.writeImageRegion(regionName, regionImage);
 
                     currentProgress += approxProgressPerPage / (double) regions.size();
                     LoadingController.setProgress(currentProgress);
@@ -99,47 +80,40 @@ public class PDFExtractor {
 
                 stripper.extractRegions(page);
 
+                System.out.println("Extracting text from regions...");
                 for (String region : stripper.getRegions()) {
                     String text = stripper.getTextForRegion(region);
                     regionText.put(region, text);
                 }
             }
 
-            ArrayList<Question> questions = new ArrayList<>();
+            metaText = metaText.replace("\n", "_");
+            Exam exam = new Exam(metaText);
 
             int number = 1;
-            for (String key : regionImages.keySet()) {
-                Image image = regionImages.get(key);
+            for (String key : regionText.keySet()) {
                 String text = regionText.getOrDefault(key, "").trim();
 
-                questions.add(new Question(number, text, image, key));
+                System.out.println("Creating question from region " + key);
+
+                // skip final page
+                if (text.contains("ZKONTROLUJTE"))
+                    continue;
+
+                exam.add(new Question(number, text, ImageCache.getInstance().getImage(key), key));
 
                 number++;
             }
 
-            Exam exam = new Exam(questions);
-            File fileOutput = new File(relative,"exam.txt");
-            File metaFileOut = new File(relative,"meta.txt");
-            java.nio.file.Files.writeString(fileOutput.toPath(), exam.serialize());
-            Files.writeString(metaFileOut.toPath(), metaText);
+            System.out.println("Exporting archive...");
 
-            String name = metaText.replace("\n", "_");
-
-            ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(name + ".zip"));
-
-            for (File f : Objects.requireNonNull(relative.listFiles())) {
-                ZipEntry entry = new ZipEntry(f.getName());
-                zip.putNextEntry(entry);
-                byte[] bytes = java.nio.file.Files.readAllBytes(f.toPath());
-                zip.write(bytes, 0, bytes.length);
-                zip.closeEntry();
-            }
-
-            zip.close();
+            Archiver.createArchive(metaText, exam, null, null);
 
             LoadingController.setProgress(1.0d);
 
             return exam;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

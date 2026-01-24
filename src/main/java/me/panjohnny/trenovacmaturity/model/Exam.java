@@ -1,17 +1,23 @@
 package me.panjohnny.trenovacmaturity.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class Exam {
-    private final List<Question> questions;
+public class Exam extends ArrayList<Question> implements JsonSerializable {
 
     private int currentQuestionIndex = 0;
-    public Exam(List<Question> questions) {
-        this.questions = questions;
+    private final String meta;
+
+    public Exam(String meta) {
+        this.meta = meta;
     }
 
     public void nextQuestion() {
-        if (currentQuestionIndex < questions.size() - 1) {
+        if (currentQuestionIndex < this.size() - 1) {
             currentQuestionIndex++;
         }
     }
@@ -23,29 +29,41 @@ public class Exam {
     }
 
     public Question getCurrentQuestion() {
-        return questions.get(currentQuestionIndex);
+        return this.get(currentQuestionIndex);
     }
 
-    public String serialize() {
-        StringBuilder sb = new StringBuilder();
-        for (Question q : questions) {
-            sb.append(q.serialize()).append("\n");
+    public JsonElement serialize() {
+        JsonObject object = new JsonObject();
+        JsonArray array = new JsonArray();
+
+        for (Question q : this) {
+            array.add(q.serialize());
         }
-        return sb.toString();
+
+        object.addProperty("meta", this.meta);
+        object.add("questions", array);
+
+        return object;
     }
 
-    public static Exam deserialize(String data) {
-        String[] lines = data.split("\n");
-        List<Question> questions = new java.util.ArrayList<>();
-        for (String line : lines) {
-            if (!line.trim().isEmpty()) {
-                questions.add(Question.deserialize(line));
-            }
+    public static Exam deserialize(JsonElement data) {
+        JsonObject object = data.getAsJsonObject();
+        JsonArray array = object.getAsJsonArray("questions");
+
+        Exam exam = new Exam(object.get("meta").getAsString());
+
+        for (JsonElement el : array) {
+            exam.add(Question.deserialize(el));
         }
-        return new Exam(questions);
+
+        return exam;
     }
 
     public int length() {
-        return questions.size();
+        return this.size();
+    }
+
+    public String getMeta() {
+        return meta;
     }
 }

@@ -2,23 +2,25 @@ package me.panjohnny.trenovacmaturity.fx;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
-import me.panjohnny.trenovacmaturity.MaturitaApplication;
+import me.panjohnny.trenovacmaturity.model.AnswerSet;
 
-import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
-public class WelcomeController extends BaseController {
+public class ImportController extends BaseController {
     @FXML
     public HBox lastOpened;
+
+    @FXML
+    public TextArea metaArea;
 
     @Override
     public void loadAppData() {
         String opened = application.getRetentionHelper().get("lastOpened");
+        AnswerSet answers = application.getAnswers();
+
+        metaArea.setText(answers.getMeta());
 
         if (opened != null) {
             Button temp = (Button) lastOpened.getChildren().getFirst();

@@ -6,14 +6,22 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import me.panjohnny.trenovacmaturity.archive.ArchiveLoader;
+
+import me.panjohnny.trenovacmaturity.fs.Archiver;
+import me.panjohnny.trenovacmaturity.fs.MaturitaFile;
+import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
 import me.panjohnny.trenovacmaturity.fx.BaseController;
+
+import me.panjohnny.trenovacmaturity.model.AnswerSet;
 import me.panjohnny.trenovacmaturity.model.Exam;
-import me.panjohnny.trenovacmaturity.pdf.PDFExtractor;
+import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
+import me.panjohnny.trenovacmaturity.pdf.AnswerSetParser;
+import me.panjohnny.trenovacmaturity.pdf.ExamPDFParser;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -21,12 +29,18 @@ import java.util.zip.ZipInputStream;
 public class MaturitaApplication extends Application {
     private Stage primaryStage;
     private final RetentionHelper helper;
-    private final PDFExtractor extractor;
-    public static final Path relativeLocation = Path.of("generated/temp/");
+    private final ExamPDFParser examPDFParser;
+    private final AnswerSetParser answerSetParser = new AnswerSetParser();
+
+    private boolean assigningInProgress = false;
+
+    private Exam exam;
+    private QuestionAnswerMap questionAnswerMap;
+    private AnswerSet answers;
 
     public MaturitaApplication() {
         this.helper = new RetentionHelper(new java.io.File("maturita-helper.properties"));
-        this.extractor = new PDFExtractor();
+        this.examPDFParser = new ExamPDFParser();
     }
 
     @Override
@@ -61,17 +75,17 @@ public class MaturitaApplication extends Application {
         });
     }
 
-    private Exam exam;
+    private MaturitaFile loadedFile;
 
     public void loadPDF(File file) {
         try {
             loadingScreen();
-            extractor.parseAsync(file).handleAsync((exam, t) -> {
+            examPDFParser.parseAsync(file).handleAsync((exam, t) -> {
                 if (t != null) {
                     throw new RuntimeException(t);
                 }
+
                 this.exam = exam;
-                System.out.println("exam loaded from PDF");
                 return null;
             }).thenRun(this::homeScreen);
 
@@ -80,7 +94,23 @@ public class MaturitaApplication extends Application {
         }
     }
 
-    private void homeScreen() {
+    public void saveQuestionAnswerMap() {
+        try {
+            Archiver.createArchive(exam.getMeta(), exam, answers, questionAnswerMap);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void loadQuestionAnswerMap() {
+        this.questionAnswerMap = answers.autoAssign(exam);
+    }
+
+    public QuestionAnswerMap getQuestionAnswerMap() {
+        return questionAnswerMap;
+    }
+
+    public void homeScreen() {
         changeScene("home-view.fxml");
     }
 
@@ -90,6 +120,9 @@ public class MaturitaApplication extends Application {
 
     public String getZIPMeta(File file) {
         try {
+            if (!Files.exists(file.toPath())) {
+                return null;
+            }
             ZipInputStream input = new ZipInputStream(new FileInputStream(file));
             ZipEntry entry;
 
@@ -114,14 +147,50 @@ public class MaturitaApplication extends Application {
 
     public void openExamZIP(File file) {
         loadingScreen();
-        ArchiveLoader.loadExamFromArchiveAsync(file).handleAsync((exam, t) -> {
+        try {
+            if (!assigningInProgress) {
+                TemporaryFileSystemManager.cleanup();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Archiver.loadArchiveAsync(file.toPath()).handleAsync((maturitaFile, t) -> {
             if (t != null) {
                 throw new RuntimeException(t);
             }
-            this.exam = exam;
+            this.exam = maturitaFile.exam();
+            if (!assigningInProgress) {
+                this.answers = maturitaFile.answerSet();
+                this.questionAnswerMap = maturitaFile.qaMap();
+            }
             System.out.println("exam loaded from zip");
             return null;
-        }).thenRun(this::homeScreen);
+        }).thenRun(() -> {
+            if (assigningInProgress) {
+                changeScene("import-assign.fxml");
+            } else {
+                homeScreen();
+            }
+        });
+    }
+
+    public void openAnswerSetPDF(File file) {
+        try {
+            loadingScreen();
+            answerSetParser.parseAsync(file).handleAsync((an, t) -> {
+                if (t != null) {
+                    throw new RuntimeException(t);
+                }
+                this.answers = an;
+                System.out.println("answers loaded from PDF");
+                assigningInProgress = true;
+                return null;
+            }).thenRun(() -> {
+                changeScene("import-view.fxml");
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public RetentionHelper getRetentionHelper() {
@@ -130,5 +199,9 @@ public class MaturitaApplication extends Application {
 
     public Exam getExam() {
         return exam;
+    }
+
+    public AnswerSet getAnswers() {
+        return answers;
     }
 }

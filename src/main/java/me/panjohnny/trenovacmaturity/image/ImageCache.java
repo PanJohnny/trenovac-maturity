@@ -1,11 +1,17 @@
 package me.panjohnny.trenovacmaturity.image;
 
 import javafx.scene.image.Image;
+import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 
+/**
+ * Loading cache for images stored on disk.
+ */
 public class ImageCache {
     private final HashMap<String, Image> cache = new HashMap<>();
 
@@ -21,12 +27,14 @@ public class ImageCache {
     public Image getImage(String key) {
         if (!cache.containsKey(key)) {
             // load image from disk if exists
-            File file = new File(key + ".png");
-            if (file.exists()) {
+            Path path = TemporaryFileSystemManager.resolveRegionPath(key);
+            System.out.println("Loading image from path: " + path.toString());
+            if (Files.exists(path)) {
                 try {
-                    cache.put(key, new Image(file.toURI().toString()));
+                    cache.put(key, new Image(path.toUri().toString()));
                 } catch (Exception e) {
                     cache.put(key, null);
+                    System.out.println("Failed to load image from path: " + path.toString());
                     return null;
                 }
             } else {
@@ -37,7 +45,7 @@ public class ImageCache {
         return cache.get(key);
     }
 
-    public void putImage(String key, byte[] data) {
-        cache.put(key, new Image(new ByteArrayInputStream(data)));
+    public void clear() {
+        cache.clear();
     }
 }

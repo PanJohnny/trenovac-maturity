@@ -2,9 +2,8 @@ package me.panjohnny.trenovacmaturity.fx;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ProgressBar;
-import me.panjohnny.trenovacmaturity.MaturitaApplication;
 
-public class LoadingController implements BaseController {
+public class LoadingController extends BaseController {
     @FXML
     public ProgressBar progress;
 
@@ -14,12 +13,6 @@ public class LoadingController implements BaseController {
         if (instance != null) {
             instance.progress.setProgress(value);
         }
-    }
-
-
-    @Override
-    public void setApplication(MaturitaApplication application) {
-
     }
 
     @Override

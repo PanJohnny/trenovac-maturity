@@ -19,13 +19,17 @@ public class RetentionHelper {
         }
     }
 
-    public void put(String key, String value) {
-        properties.setProperty(key, value);
+    public void put(String key, Object value) {
+        properties.put(key, value);
         saveFile();
     }
 
     public String get(String key) {
         return properties.getProperty(key);
+    }
+
+    public String[] getArray(String key) {
+        return (String[]) properties.get(key);
     }
 
     public void saveFile() {

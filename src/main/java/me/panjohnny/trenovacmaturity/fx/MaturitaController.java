@@ -1,16 +1,26 @@
 package me.panjohnny.trenovacmaturity.fx;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.PopupWindow;
+import javafx.stage.Stage;
 import me.panjohnny.trenovacmaturity.MaturitaApplication;
+import me.panjohnny.trenovacmaturity.model.Answer;
 import me.panjohnny.trenovacmaturity.model.Exam;
-import me.panjohnny.trenovacmaturity.pdf.PDFExtractor;
+import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 
-import java.io.File;
-import java.io.IOException;
+import java.util.List;
 
-public class MaturitaController implements BaseController{
+public class MaturitaController extends BaseController {
     @FXML
     private Label welcomeText;
 
@@ -19,6 +29,9 @@ public class MaturitaController implements BaseController{
 
     @FXML
     private Canvas canvas;
+
+    @FXML
+    private VBox answerBox;
 
     private final int CANVAS_MAX_WIDTH = 1000;
     private final int CANVAS_MAX_HEIGHT = 700;
@@ -36,6 +49,38 @@ public class MaturitaController implements BaseController{
         if (exam != null) {
             exam.nextQuestion();
             redraw();
+        }
+    }
+
+    @FXML
+    protected void showAnswer() {
+        QuestionAnswerMap map = application.getQuestionAnswerMap();
+        if (exam != null && map != null) {
+            List<Answer> answers = map.getOrDefault(exam.getCurrentQuestion(), null);
+
+            // create a new window with the answer
+            if (answers != null) {
+                VBox root = new VBox(10);
+                root.setPadding(new Insets(10));
+                for (Answer answer : answers) {
+                    String text = answer.text();
+                    if (text != null && !text.isEmpty()) {
+                        Label answerLabel = new Label(text);
+                        answerLabel.setWrapText(true);
+                        answerLabel.setMaxWidth(800);
+                        root.getChildren().add(answerLabel);
+                    }
+                    ImageView iv = new ImageView(answer.image());
+                    iv.setPreserveRatio(true);
+                    iv.setFitWidth(800);
+                    root.getChildren().add(iv);
+                }
+                ScrollPane scroll = new ScrollPane(root);
+                scroll.setFitToWidth(true);
+
+                answerBox.getChildren().clear();
+                answerBox.getChildren().add(scroll);
+            }
         }
     }
 
@@ -67,12 +112,7 @@ public class MaturitaController implements BaseController{
         }
 
         infoLabel.setText(exam.getCurrentQuestion().number() + "/" + exam.length());
-    }
-
-    private MaturitaApplication application;
-    @Override
-    public void setApplication(MaturitaApplication application) {
-        this.application = application;
+        answerBox.getChildren().clear();
     }
 
     private Exam exam;
@@ -81,20 +121,5 @@ public class MaturitaController implements BaseController{
     public void loadAppData() {
         exam = application.getExam();
         redraw();
-    }
-
-    @FXML
-    public void openZIP() {
-        Actions.openZIP(application);
-    }
-
-    @FXML
-    public void openPDF() {
-        Actions.openPDF(application);
-    }
-
-    @FXML
-    public void openCERMAT() {
-        Actions.openCERMAT();
     }
 }

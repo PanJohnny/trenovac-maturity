@@ -25,9 +25,9 @@ public class Actions {
 
     public static void openZIP(MaturitaApplication application) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Open exam ZIP");
+        fileChooser.setTitle("Open .maturita file");
         fileChooser.setInitialDirectory(new File(""));
-        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("Exam ZIP Files", "*.zip"));
+        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("MATURITA Files", "*.maturita"));
         File file = fileChooser.showOpenDialog(null);
 
         if (file != null) {
@@ -47,14 +47,28 @@ public class Actions {
             }
         }else{
             Runtime runtime = Runtime.getRuntime();
+            ProcessBuilder processBuilder = new ProcessBuilder();
             try {
                 if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-                    runtime.exec("open " + url);
+                    processBuilder.command("open", url);
                 } else {
-                    runtime.exec("xdg-open " + url);
+                    processBuilder.command("xdg-open", url);
                 }
+                processBuilder.start();
             } catch (IOException e) {
             }
+        }
+    }
+
+    public static void openAnswerSetPDF(MaturitaApplication application) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Answer Set PDF");
+        fileChooser.setInitialDirectory(new File(""));
+        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+        File file = fileChooser.showOpenDialog(null);
+
+        if (file != null) {
+            application.openAnswerSetPDF(file);
         }
     }
 }

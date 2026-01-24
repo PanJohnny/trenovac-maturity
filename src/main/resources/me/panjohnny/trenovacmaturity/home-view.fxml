@@ -11,31 +11,30 @@
     </padding>
     <MenuBar>
         <menus>
-            <Menu mnemonicParsing="false" text="File">
+            <Menu mnemonicParsing="false" text="Soubor">
                 <items>
-               <MenuItem mnemonicParsing="false" onAction="#openZIP" text="Open ZIP" />
-               <MenuItem mnemonicParsing="false" onAction="#openPDF" text="Open PDF" />
-               <Menu mnemonicParsing="false" text="Open last">
+               <MenuItem mnemonicParsing="false" onAction="#openZIP" text="Otevřít ZIP" />
+               <MenuItem mnemonicParsing="false" onAction="#openPDF" text="Otevřít PDF" />
+               <Menu mnemonicParsing="false" text="Poslední soubory">
                  <items>
                    <MenuItem disable="true" mnemonicParsing="false" text="filename" />
                  </items>
                </Menu>
                <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem mnemonicParsing="false" text="Close exam" />
-               <MenuItem mnemonicParsing="false" text="Close app" />
+                    <MenuItem mnemonicParsing="false" text="Zavřít test" />
+               <MenuItem mnemonicParsing="false" text="Zavřít okno" />
                 </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
+            <Menu mnemonicParsing="false" text="Zobrazit">
                 <items>
-               <MenuItem mnemonicParsing="false" text="View metadata" />
-               <MenuItem mnemonicParsing="false" text="Open data folder" />
-                    <MenuItem mnemonicParsing="false" text="Delete" />
+               <MenuItem mnemonicParsing="false" text="Zobrazit metadata" />
+               <MenuItem mnemonicParsing="false" text="Zobrazit soubor s daty" />
                 </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Help">
+            <Menu mnemonicParsing="false" text="Pomoc">
                 <items>
-                    <MenuItem mnemonicParsing="false" onAction="#openCERMAT" text="Download exams" />
-                    <MenuItem mnemonicParsing="false" text="About" />
+                    <MenuItem mnemonicParsing="false" onAction="#openCERMAT" text="Stáhnout testy" />
+                    <MenuItem mnemonicParsing="false" text="O aplikaci" />
                 </items>
             </Menu>
         </menus>
@@ -51,19 +50,22 @@
             <Label fx:id="infoLabel" />
         </children>
     </HBox>
-   <VBox prefHeight="100.0" prefWidth="200.0" alignment="CENTER">
+   <HBox prefHeight="100.0" prefWidth="200.0" alignment="CENTER" spacing="20.0">
       <children>
           <Canvas fx:id="canvas" height="400.0" width="500.0" HBox.hgrow="ALWAYS" />
+          <VBox fx:id="answerBox" spacing="10.0">
+
+          </VBox>
       </children>
-   </VBox>
+   </HBox>
     <HBox spacing="20">
         <children>
-            <Button mnemonicParsing="false" onAction="#onPrevClick" text="Prev" />
-            <Button mnemonicParsing="false" onAction="#onNextClick" text="Next" />
+            <Button mnemonicParsing="false" onAction="#onPrevClick" text="Předchozí" />
+            <Button mnemonicParsing="false" onAction="#onNextClick" text="Další" />
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <TextField promptText="Tags separated by ," disable="true" />
+            <TextField promptText="Štítky oddělené čárkou" disable="true" />
             <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <Button mnemonicParsing="false" text="Show correct answer" disable="true" />
+            <Button mnemonicParsing="false" text="Zobrazit odpověď" onAction="#showAnswer" />
         </children>
     </HBox>
     <ScrollPane prefHeight="200.0" prefWidth="200.0">

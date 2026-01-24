@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="400.0" prefWidth="600.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.ImportController">
+    <Label alignment="TOP_CENTER" contentDisplay="CENTER" text="Odpovědi naimportovány" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        </padding>
+        <font>
+            <Font size="24.0" />
+        </font>
+    </Label>
+
+    <Label alignment="TOP_CENTER" contentDisplay="CENTER" minHeight="-Infinity" text="PDF soubor s řešením testu byl úspěšně zpracován. Teď jen zbývá vybrat k jakému testu tyto odpovědi patří. Na další obrazovce následně případně opravíte párování otázka-odpověď. Metadata:" wrapText="true" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        </padding>
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Label>
+   <TextArea fx:id="metaArea" prefHeight="200.0" prefWidth="200.0">
+      <VBox.margin>
+         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+      </VBox.margin>
+   </TextArea>
+
+    <Label alignment="TOP_CENTER" contentDisplay="CENTER" text="Vyberte prosím test na přiřazení odpovědí" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        </padding>
+        <font>
+            <Font size="20.0" />
+        </font>
+    </Label>
+    <Label text="Poslední otevřeno">
+        <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+        </VBox.margin>
+        <font>
+            <Font name="System Bold" size="19.0" />
+        </font>
+    </Label>
+    <HBox fx:id="lastOpened" alignment="CENTER" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" spacing="10" VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </VBox.margin>
+        <Button maxWidth="Infinity" mnemonicParsing="false" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Zde se budou zobrazovat poslední soubory" HBox.hgrow="ALWAYS" />
+    </HBox>
+    <Label text="Otevřít jiný test">
+        <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+        </VBox.margin>
+        <font>
+            <Font name="System Bold" size="19.0" />
+        </font>
+    </Label>
+    <HBox alignment="CENTER" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" spacing="10" VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </VBox.margin>
+        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openZIP" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Otevřít testový zip" HBox.hgrow="ALWAYS" />
+    </HBox>
+</VBox>

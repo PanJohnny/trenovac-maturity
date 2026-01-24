@@ -7,6 +7,8 @@ module me.panjohnny.trenovacmaturity {
     requires org.apache.pdfbox;
     requires java.desktop;
     requires atlantafx.base;
+    requires org.jetbrains.annotations;
+    requires com.google.gson;
 
     opens me.panjohnny.trenovacmaturity to javafx.fxml;
     exports me.panjohnny.trenovacmaturity;

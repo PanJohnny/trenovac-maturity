@@ -1,5 +1,8 @@
 package me.panjohnny.trenovacmaturity.model;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import javafx.scene.image.Image;
 import me.panjohnny.trenovacmaturity.image.ImageCache;
 
@@ -7,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public record Question(int number, String text, Image image, String region_id, List<String> tags) {
+public record Question(int number, String text, Image image, String region_id, List<String> tags) implements JsonSerializable {
     public Question(int number, String text, Image image, String region_id) {
         this(number, text, image, region_id, new ArrayList<>());
     }
@@ -30,29 +33,34 @@ public record Question(int number, String text, Image image, String region_id, L
     }
 
     @Override
-    public String toString() {
-        return "Question{" +
-                "number=" + number +
-                ", text='" + text + '\'' +
-                ", region_id='" + region_id + '\'' +
-                ", tags=" + tags +
-                '}';
-    }
+    public JsonElement serialize() {
+        JsonObject object = new JsonObject();
+        object.addProperty("number", number);
+        object.addProperty("text", text);
+        object.addProperty("region_id", region_id);
 
-    public String serialize() {
-        return number + "|" + text.replace("\n", "\\n").replace("|", "\\|") + "|" + region_id + "|" + String.join(",", tags);
-    }
+        JsonArray array = new JsonArray();
 
-    public static Question deserialize(String line) {
-        String[] parts = line.split("(?<!\\\\)\\|", 4);
-        int number = Integer.parseInt(parts[0]);
-        String text = parts[1].replace("\\n", "\n").replace("\\|", "|");
-        String region_id = parts[2];
-        List<String> tags = new ArrayList<>();
-        if (parts.length > 3 && !parts[3].isEmpty()) {
-            String[] tagParts = parts[3].split(",");
-            Collections.addAll(tags, tagParts);
+        for (String tag : tags) {
+            array.add(tag);
         }
+        
+        object.add("tags", array);
+
+        return object;
+    }
+
+    public static Question deserialize(JsonElement element) {
+        JsonObject object = element.getAsJsonObject();
+
+        int number = object.get("number").getAsInt();
+        String text = object.get("text").getAsString();
+        String region_id = object.get("region_id").getAsString();
+
+        JsonArray tagArray = object.get("tags").getAsJsonArray();
+
+        List<String> tags = tagArray.asList().stream().map(JsonElement::getAsString).toList();
+
         return new Question(number, text, ImageCache.getInstance().getImage(region_id), region_id, tags);
     }
 }
