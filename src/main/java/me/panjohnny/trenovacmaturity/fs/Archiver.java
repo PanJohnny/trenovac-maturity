@@ -2,6 +2,7 @@ package me.panjohnny.trenovacmaturity.fs;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import me.panjohnny.trenovacmaturity.MaturitaApplication;
 import me.panjohnny.trenovacmaturity.fx.LoadingController;
 import me.panjohnny.trenovacmaturity.image.ImageCache;
 import me.panjohnny.trenovacmaturity.model.*;
@@ -19,6 +20,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 public class Archiver {
+
     public static MaturitaFile createArchive(String name, Exam exam, @Nullable AnswerSet answersSet, @Nullable QuestionAnswerMap qaMap) throws IOException {
         Path path = Path.of(name + ".maturita");
 
@@ -27,11 +29,13 @@ public class Archiver {
             zip.write(exam.serialize().toString().getBytes(StandardCharsets.UTF_8));
             zip.closeEntry();
 
+            zip.putNextEntry(new ZipEntry("meta.txt"));
+            zip.write(exam.getMeta().getBytes(StandardCharsets.UTF_8));
+            zip.closeEntry();
+
             for (Question question : exam) {
                 zip.putNextEntry(new ZipEntry(question.region_id() + ".png"));
                 String url = question.image().getUrl();
-
-                System.out.println(url);
 
                 // Opravený způsob načítání ze souboru
                 Path imagePath = Path.of(URI.create(url));
@@ -68,6 +72,8 @@ public class Archiver {
             Files.deleteIfExists(path);
             throw e;
         }
+
+        MaturitaApplication.LOGGER.log(System.Logger.Level.INFO, "Exam written to file {0}", path);
 
         return new MaturitaFile(path, exam, answersSet, qaMap);
     }

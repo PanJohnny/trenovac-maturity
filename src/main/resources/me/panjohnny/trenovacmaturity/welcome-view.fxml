@@ -41,9 +41,9 @@
         <VBox.margin>
             <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
         </VBox.margin>
-        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openPDF" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Otevřít PDF" HBox.hgrow="ALWAYS" />
-        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openZIP" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Otevřít testový zip" HBox.hgrow="ALWAYS" />
-        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openAnswerSetPDF" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Importovat odpovědi" HBox.hgrow="ALWAYS" />
+        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openZIP" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Otevřít maturita soubor" HBox.hgrow="ALWAYS" />
+        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openPDF" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Importovat PDF" HBox.hgrow="ALWAYS" />
+        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openAnswerSetPDF" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Přidat odpovědi" HBox.hgrow="ALWAYS" />
         <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openCERMAT" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Stáhnout nové testy" HBox.hgrow="ALWAYS" />
     </HBox>
 

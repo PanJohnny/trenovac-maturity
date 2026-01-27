@@ -7,12 +7,25 @@ import javafx.scene.image.Image;
 import me.panjohnny.trenovacmaturity.image.ImageCache;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public record Question(int number, String text, Image image, String region_id, List<String> tags) implements JsonSerializable {
     public Question(int number, String text, Image image, String region_id) {
         this(number, text, image, region_id, new ArrayList<>());
+    }
+
+    public String getTagString() {
+        StringBuilder sb = new StringBuilder();
+        for (String tag : tags) {
+            sb.append(tag);
+        }
+        return sb.toString();
+    }
+
+    public void setQuestions(String s) {
+        String[] questions = s.split("( +),( +)");
+        tags.clear();
+        tags.addAll(List.of(questions));
     }
 
     @Override
@@ -59,7 +72,7 @@ public record Question(int number, String text, Image image, String region_id, L
 
         JsonArray tagArray = object.get("tags").getAsJsonArray();
 
-        List<String> tags = tagArray.asList().stream().map(JsonElement::getAsString).toList();
+        List<String> tags = new ArrayList<>(tagArray.asList().stream().map(JsonElement::getAsString).toList());
 
         return new Question(number, text, ImageCache.getInstance().getImage(region_id), region_id, tags);
     }

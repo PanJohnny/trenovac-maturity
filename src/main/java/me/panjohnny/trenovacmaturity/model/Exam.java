@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Exam extends ArrayList<Question> implements JsonSerializable {
@@ -55,6 +56,8 @@ public class Exam extends ArrayList<Question> implements JsonSerializable {
         for (JsonElement el : array) {
             exam.add(Question.deserialize(el));
         }
+
+        exam.sort(Comparator.comparingInt(Question::number));
 
         return exam;
     }

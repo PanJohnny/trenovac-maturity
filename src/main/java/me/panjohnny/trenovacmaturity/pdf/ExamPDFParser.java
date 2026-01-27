@@ -16,7 +16,6 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -43,12 +42,8 @@ public class ExamPDFParser {
 
                 BufferedImage pageImage = renderer.renderImageWithDPI(pageIndex, ImageUtil.DPI);
 
-                System.out.println("Page " + pageIndex);
-
-                System.out.println("Detecting horizontal lines...");
                 List<Integer> horizontalLines = ImageUtil.detectHorizontalLines(pageImage);
 
-                System.out.println("Creating regions...");
                 List<Rectangle> regions = createRegions(horizontalLines,
                         (int) page.getMediaBox().getWidth() * ImageUtil.DPI / 72,
                         (int) page.getMediaBox().getHeight() * ImageUtil.DPI / 72);
@@ -56,7 +51,6 @@ public class ExamPDFParser {
                 PDFTextStripperByArea stripper = new PDFTextStripperByArea();
                 stripper.setSortByPosition(true);
 
-                System.out.println("Processing regions...");
                 for (int i = 0; i < regions.size(); i++) {
                     Rectangle region = regions.get(i);
 
@@ -67,10 +61,7 @@ public class ExamPDFParser {
                     BufferedImage regionImage = pageImage.getSubimage(
                             region.x, region.y, region.width, region.height);
 
-                    System.out.println("Processing region " + regionName);
                     regionImage = ImageUtil.removeWhitespace(regionImage);
-
-                    System.out.println("Writing region image " + regionName);
 
                     TemporaryFileSystemManager.writeImageRegion(regionName, regionImage);
 
@@ -80,7 +71,6 @@ public class ExamPDFParser {
 
                 stripper.extractRegions(page);
 
-                System.out.println("Extracting text from regions...");
                 for (String region : stripper.getRegions()) {
                     String text = stripper.getTextForRegion(region);
                     regionText.put(region, text);
@@ -94,8 +84,6 @@ public class ExamPDFParser {
             for (String key : regionText.keySet()) {
                 String text = regionText.getOrDefault(key, "").trim();
 
-                System.out.println("Creating question from region " + key);
-
                 // skip final page
                 if (text.contains("ZKONTROLUJTE"))
                     continue;
@@ -104,8 +92,6 @@ public class ExamPDFParser {
 
                 number++;
             }
-
-            System.out.println("Exporting archive...");
 
             Archiver.createArchive(metaText, exam, null, null);
 

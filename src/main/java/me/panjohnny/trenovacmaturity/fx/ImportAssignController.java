@@ -2,7 +2,6 @@ package me.panjohnny.trenovacmaturity.fx;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import me.panjohnny.trenovacmaturity.model.Answer;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
@@ -43,7 +42,7 @@ public class ImportAssignController extends BaseController {
 
         if (firstEmptyIndex != -1) {
             tabPane.getSelectionModel().select(firstEmptyIndex);
-            Dialog foundDialog = new Dialog();
+            Dialog<Void> foundDialog = new Dialog<>();
             foundDialog.setTitle("Ups... nepovedlo se přiřadit odpověď");
             foundDialog.setContentText("Jedna nebo více otázek nebylo možné automaticky přiřadit k odpovědím. Byla vybrána první taková otázka, kterou je potřeba přiřadit ručně.");
             foundDialog.getDialogPane().getButtonTypes().addAll(javafx.scene.control.ButtonType.OK);
@@ -61,7 +60,7 @@ public class ImportAssignController extends BaseController {
             tabController.modifyMap(map);
         }
 
-        application.saveQuestionAnswerMap();
+        application.saveCurrentOpenedExam();
         application.homeScreen();
     }
 

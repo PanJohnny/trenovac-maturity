@@ -25,7 +25,7 @@ public class AnswerSetParser {
             // Kód textu: ...
             String meta = PDFUtil.extractMetaText(doc, 0.07);
 
-            HashMap<String, String> regionText = new HashMap<>();
+            LinkedHashMap<String, String> regionText = new LinkedHashMap<>();
 
             double currentProgress = 0d;
             double approxProgressPerPage = 1d / (double) doc.getNumberOfPages();

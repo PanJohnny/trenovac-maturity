@@ -28,13 +28,11 @@ public class ImageCache {
         if (!cache.containsKey(key)) {
             // load image from disk if exists
             Path path = TemporaryFileSystemManager.resolveRegionPath(key);
-            System.out.println("Loading image from path: " + path.toString());
             if (Files.exists(path)) {
                 try {
                     cache.put(key, new Image(path.toUri().toString()));
                 } catch (Exception e) {
                     cache.put(key, null);
-                    System.out.println("Failed to load image from path: " + path.toString());
                     return null;
                 }
             } else {

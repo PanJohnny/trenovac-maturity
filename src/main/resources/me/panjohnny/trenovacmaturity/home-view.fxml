@@ -13,28 +13,24 @@
         <menus>
             <Menu mnemonicParsing="false" text="Soubor">
                 <items>
-               <MenuItem mnemonicParsing="false" onAction="#openZIP" text="Otevřít ZIP" />
-               <MenuItem mnemonicParsing="false" onAction="#openPDF" text="Otevřít PDF" />
-               <Menu mnemonicParsing="false" text="Poslední soubory">
-                 <items>
-                   <MenuItem disable="true" mnemonicParsing="false" text="filename" />
-                 </items>
-               </Menu>
+               <MenuItem mnemonicParsing="false" onAction="#openZIP" text="Otevřít maturitu" />
+               <MenuItem mnemonicParsing="false" onAction="#openPDF" text="Importovat PDF" />
+                    <MenuItem mnemonicParsing="false" onAction="#openAnswerSetPDF" text="Importovat odpovědi" />
                <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem mnemonicParsing="false" text="Zavřít test" />
-               <MenuItem mnemonicParsing="false" text="Zavřít okno" />
+                    <MenuItem mnemonicParsing="false" onAction="#closeExam" text="Zavřít test" />
+               <MenuItem mnemonicParsing="false" onAction="#closeApp" text="Zavřít okno" />
                 </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Zobrazit">
                 <items>
-               <MenuItem mnemonicParsing="false" text="Zobrazit metadata" />
-               <MenuItem mnemonicParsing="false" text="Zobrazit soubor s daty" />
+               <MenuItem mnemonicParsing="false" onAction="#openMeta" text="Zobrazit metadata" />
+               <MenuItem mnemonicParsing="false" onAction="#openArchive" text="Zobrazit soubor s daty" />
                 </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Pomoc">
                 <items>
                     <MenuItem mnemonicParsing="false" onAction="#openCERMAT" text="Stáhnout testy" />
-                    <MenuItem mnemonicParsing="false" text="O aplikaci" />
+                    <MenuItem mnemonicParsing="false" text="O aplikaci" onAction="#info" />
                 </items>
             </Menu>
         </menus>
@@ -50,7 +46,7 @@
             <Label fx:id="infoLabel" />
         </children>
     </HBox>
-   <HBox prefHeight="100.0" prefWidth="200.0" alignment="CENTER" spacing="20.0">
+   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
       <children>
           <Canvas fx:id="canvas" height="400.0" width="500.0" HBox.hgrow="ALWAYS" />
           <VBox fx:id="answerBox" spacing="10.0">
@@ -58,24 +54,28 @@
           </VBox>
       </children>
    </HBox>
-    <HBox spacing="20">
+    <HBox spacing="20" VBox.vgrow="NEVER">
         <children>
             <Button mnemonicParsing="false" onAction="#onPrevClick" text="Předchozí" />
             <Button mnemonicParsing="false" onAction="#onNextClick" text="Další" />
-            <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <TextField promptText="Štítky oddělené čárkou" disable="true" />
-            <Separator orientation="VERTICAL" prefHeight="200.0" />
-            <Button mnemonicParsing="false" text="Zobrazit odpověď" onAction="#showAnswer" />
+            <Separator orientation="VERTICAL" />
+            <TextField promptText="Štítky oddělené čárkou" HBox.hgrow="ALWAYS" fx:id="tagInput" onKeyTyped="#tagInputChanged"/>
+            <Button mnemonicParsing="false" onAction="#selectTags" text="Vybrat predefinované"/>
+            <Separator orientation="VERTICAL" />
+            <Button mnemonicParsing="false" onAction="#showAnswer" text="Zobrazit odpověď" />
         </children>
     </HBox>
-    <ScrollPane prefHeight="200.0" prefWidth="200.0">
-        <content>
-            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-                <children>
-
-                    <Label fx:id="welcomeText" />
-                </children>
-            </AnchorPane>
-        </content>
-    </ScrollPane>
+   <HBox prefHeight="200.0" prefWidth="200.0" fx:id="hboxInfo">
+      <children>
+          <ScrollPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+              <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                      <children>
+                          <Label fx:id="welcomeText" />
+                      </children>
+                  </AnchorPane>
+              </content>
+          </ScrollPane>
+      </children>
+   </HBox>
 </VBox>

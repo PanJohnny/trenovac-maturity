@@ -50,9 +50,6 @@ public class ImageUtil {
                         if (!isBlackExam(image, x - 1, y + TABLE_Y_THRESHOLD) && !isBlackExam(image, x - 1, y - TABLE_Y_THRESHOLD) && lastLineY + MIN_REGION_HEIGHT < y) {
                             lines.add(y);
                             lastLineY = y;
-                            //System.out.println("Detected line at y=" + y);
-                        } else {
-                            //System.out.println("Skipped line at y=" + y + " due to table detection.");
                         }
                         continue loopHeight;
                     }
@@ -94,7 +91,6 @@ public class ImageUtil {
                         if (allBlack && lastLineY + MIN_ANSWER_SET_REGION_HEIGHT < y) {
                             lines.add(y);
                             lastLineY = y;
-                            //System.out.println("Detected line at y=" + y);
                         }
                         break;
                     }
@@ -102,9 +98,6 @@ public class ImageUtil {
                 }
             }
         }
-
-        //System.out.println("-------------------");
-        //System.out.println("lines = " + lines);
 
         return lines;
     }

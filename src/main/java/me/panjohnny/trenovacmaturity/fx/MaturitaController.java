@@ -4,20 +4,20 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Modality;
-import javafx.stage.PopupWindow;
-import javafx.stage.Stage;
+import javafx.scene.shape.Ellipse;
+import javafx.stage.*;
 import me.panjohnny.trenovacmaturity.MaturitaApplication;
 import me.panjohnny.trenovacmaturity.model.Answer;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MaturitaController extends BaseController {
@@ -32,6 +32,12 @@ public class MaturitaController extends BaseController {
 
     @FXML
     private VBox answerBox;
+
+    @FXML
+    private TextField tagInput;
+
+    @FXML
+    private HBox hboxInfo;
 
     private final int CANVAS_MAX_WIDTH = 1000;
     private final int CANVAS_MAX_HEIGHT = 700;
@@ -64,16 +70,16 @@ public class MaturitaController extends BaseController {
                 root.setPadding(new Insets(10));
                 for (Answer answer : answers) {
                     String text = answer.text();
+                    ImageView iv = new ImageView(answer.image());
+                    iv.setPreserveRatio(true);
+                    iv.setFitWidth(800);
+                    root.getChildren().add(iv);
                     if (text != null && !text.isEmpty()) {
                         Label answerLabel = new Label(text);
                         answerLabel.setWrapText(true);
                         answerLabel.setMaxWidth(800);
                         root.getChildren().add(answerLabel);
                     }
-                    ImageView iv = new ImageView(answer.image());
-                    iv.setPreserveRatio(true);
-                    iv.setFitWidth(800);
-                    root.getChildren().add(iv);
                 }
                 ScrollPane scroll = new ScrollPane(root);
                 scroll.setFitToWidth(true);
@@ -87,6 +93,12 @@ public class MaturitaController extends BaseController {
     private void redraw() {
         double width = exam.getCurrentQuestion().image().getWidth();
         double height = exam.getCurrentQuestion().image().getHeight();
+
+        tagInput.setText(exam.getCurrentQuestion().getTagString());
+
+        if (predBox != null) {
+            predBox.setVisible(false);
+        }
 
         if (width > CANVAS_MAX_WIDTH) {
             double scale = (double) CANVAS_MAX_WIDTH / width;
@@ -121,5 +133,71 @@ public class MaturitaController extends BaseController {
     public void loadAppData() {
         exam = application.getExam();
         redraw();
+    }
+
+    @FXML
+    public void closeExam() {
+        Actions.closeExam(application);
+    }
+
+    @FXML
+    public void closeApp() {
+        Actions.closeApplication();
+    }
+
+    @FXML
+    public void openArchive() {
+        Actions.openArchive(application);
+    }
+
+    @FXML
+    public void openMeta() {
+        Actions.openMeta(application);
+    }
+
+    public void tagInputChanged() {
+        String value = tagInput.getText();
+        exam.getCurrentQuestion().setQuestions(value);
+    }
+
+    @FXML
+    public void info() {
+        Actions.openInfo(application);
+    }
+
+    private VBox predBox;
+
+    @FXML
+    public void selectTags() {
+        if (predBox != null) {
+            predBox.setVisible(true);
+            return;
+        }
+        predBox = new VBox();
+        hboxInfo.getChildren().add(predBox);
+        predBox.getChildren().addAll(
+                new Label("Matematika"),
+                addTagButton("Číselné obory"),
+                addTagButton("Algebraické výrazy"),
+                addTagButton("Rovnice a nerovnice"),
+                addTagButton("Funkce"),
+                addTagButton("Posloupnosti a finanční matematika"),
+                addTagButton("Planimetrie"),
+                addTagButton("Stereometrie"),
+                addTagButton("Analytická geometrie"),
+                addTagButton("Kombinatorika; pravděpodobnost a statistika"),
+                new Label("Matematika rozšiřující"),
+                addTagButton("Číselné množiny"),
+                addTagButton("Analytická geometrie")
+        );
+    }
+
+    private Button addTagButton(String tag) {
+        Button b = new Button(tag);
+        b.setOnAction((e) -> {
+            tagInput.setText(b.getText() + "," + tagInput.getText());
+            tagInputChanged();
+        });
+        return b;
     }
 }

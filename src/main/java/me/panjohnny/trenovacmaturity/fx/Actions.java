@@ -1,6 +1,9 @@
 package me.panjohnny.trenovacmaturity.fx;
 
+import javafx.application.Platform;
+import javafx.scene.control.Dialog;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import me.panjohnny.trenovacmaturity.MaturitaApplication;
 
 import java.awt.*;
@@ -38,17 +41,28 @@ public class Actions {
 
     public static void openCERMAT() {
         String url = "https://maturita.cermat.cz/menu/testy-a-zadani-z-predchozich-obdobi";
+        openFileOrUrl(null, url);
+    }
+
+    private static void openFileOrUrl(File file, String url) {
         if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)){
             Desktop desktop = Desktop.getDesktop();
             try {
-                desktop.browse(new URI(url));
+                if (file == null) {
+                    desktop.browse(new URI(url));
+                } else {
+                    desktop.open(file);
+                }
             } catch (IOException | URISyntaxException e) {
 
             }
         }else{
-            Runtime runtime = Runtime.getRuntime();
             ProcessBuilder processBuilder = new ProcessBuilder();
             try {
+                if (file != null) {
+                    url = file.getAbsolutePath();
+                }
+
                 if (System.getProperty("os.name").toLowerCase().contains("mac")) {
                     processBuilder.command("open", url);
                 } else {
@@ -70,5 +84,46 @@ public class Actions {
         if (file != null) {
             application.openAnswerSetPDF(file);
         }
+    }
+
+    public static void closeApplication() {
+        Platform.exit();
+    }
+
+    public static void closeExam(MaturitaApplication application) {
+        application.closeExam();
+    }
+
+    public static void openArchive(MaturitaApplication application) {
+        openFileOrUrl(application.getArchivePath(), null);
+    }
+
+    public static void openMeta(MaturitaApplication application) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Informace o maturitě");
+        String data = "Název testu: %s%nSoubor:%s".formatted(application.getExam().getMeta(), application.getArchivePath());
+        dialog.setContentText(data);
+        dialog.getDialogPane().getButtonTypes().addAll(javafx.scene.control.ButtonType.OK);
+        dialog.initOwner(application.getPrimaryStage().getOwner());
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.showAndWait();
+    }
+
+    public static void openInfo(MaturitaApplication application) {
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Informace o projektu");
+        dialog.setHeaderText("Trénovač na Maturitu");
+        dialog.setContentText("""
+                Verze: %s
+                Licence: MIT
+                
+                Tato aplikace má sloužit k procvičování maturitních otázek v maturitních testech. Pomocí štítků k nim můžete přikládat různé kategorie (např. kategorie příkladů v matematice) a díky tomu se fokusovat na to, co nám nejde.
+                
+                Upozornění: Aplikace ani její tvůrci nejsou nijak spojení s CERMAT. Uživatel testy, jenž jsou předmětem autorského práva, dodává sám.
+                """.formatted(MaturitaApplication.VERSION));
+        dialog.getDialogPane().getButtonTypes().addAll(javafx.scene.control.ButtonType.OK);
+        dialog.initOwner(application.getPrimaryStage().getOwner());
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.showAndWait();
     }
 }
