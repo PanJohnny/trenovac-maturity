@@ -12,6 +12,7 @@ import me.panjohnny.trenovacmaturity.fs.MaturitaFile;
 import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
 import me.panjohnny.trenovacmaturity.fx.BaseController;
 
+import me.panjohnny.trenovacmaturity.image.ImageCache;
 import me.panjohnny.trenovacmaturity.model.AnswerSet;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -29,7 +31,7 @@ public class MaturitaApplication extends Application {
     private Stage primaryStage;
     private final RetentionHelper helper;
     private final ExamPDFParser examPDFParser;
-    private final AnswerSetParser answerSetParser = new AnswerSetParser();
+    private final AnswerSetParser answerSetParser;
 
     public static final String VERSION = "alpha0.1";
 
@@ -44,12 +46,15 @@ public class MaturitaApplication extends Application {
     private File archivePath;
 
     public MaturitaApplication() {
-        this.helper = new RetentionHelper(new java.io.File("maturita-helper.properties"));
+        this.helper = new RetentionHelper(new File("maturita-helper.properties"));
         this.examPDFParser = new ExamPDFParser();
+        this.answerSetParser = new AnswerSetParser();
     }
 
     @Override
     public void start(Stage stage) throws IOException {
+        ExceptionHandler.init();
+
         primaryStage = stage;
         changeScene("welcome-view.fxml");
         stage.setTitle("Trénovač maturity");
@@ -68,10 +73,11 @@ public class MaturitaApplication extends Application {
             try {
                 scene = new Scene(fxmlLoader.load(), 720, 580);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                ExceptionHandler.handleSevere(e, "Failed to load scene file");
             }
 
-            scene.getStylesheets().add(Launcher.class.getResource("styles.css").toExternalForm());
+            assert scene != null;
+            scene.getStylesheets().add(Objects.requireNonNull(Launcher.class.getResource("styles.css")).toExternalForm());
 
             BaseController controller = fxmlLoader.getController();
             if (controller != null) {
@@ -79,36 +85,33 @@ public class MaturitaApplication extends Application {
                 controller.loadAppData();
             }
 
-
             primaryStage.setScene(scene);
         });
     }
 
-    private MaturitaFile loadedFile;
-
     public void loadPDF(File file) {
-        try {
-            loadingScreen();
-            examPDFParser.parseAsync(file).handleAsync((exam, t) -> {
-                if (t != null) {
-                    throw new RuntimeException(t);
-                }
+        loadingScreen();
+        examPDFParser.parseAsync(file).handleAsync((exam, t) -> {
+            if (t != null) {
+                ExceptionHandler.handleWarning(t, "Failed to parse an exam PDF");
+            }
 
-                this.exam = exam;
-                LOGGER.log(System.Logger.Level.INFO, "Imported exam from PDF");
-                return null;
-            }).thenRun(this::homeScreen);
+            this.exam = exam;
+            LOGGER.log(System.Logger.Level.INFO, "Imported exam from PDF");
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            homeScreen();
+            return null;
+        });
     }
 
     public void saveCurrentOpenedExam() {
         try {
-            Archiver.createArchive(exam.getMeta(), exam, answers, questionAnswerMap);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            if (exam == null) {
+                return;
+            }
+            Archiver.createArchive(exam.getMeta(), exam, answers, questionAnswerMap, archivePath.toPath());
+        } catch (IOException e) {
+            ExceptionHandler.handleError(e, "Failed to save current opened exam");
         }
     }
 
@@ -150,7 +153,7 @@ public class MaturitaApplication extends Application {
                 input.closeEntry();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.handleWarning(e, "Failed to read .MATURITA metadata");
         }
         return null;
     }
@@ -162,26 +165,27 @@ public class MaturitaApplication extends Application {
                 TemporaryFileSystemManager.cleanup();
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.handleWarning(e, "Failed to clean up temporary file system");
         }
         Archiver.loadArchiveAsync(file.toPath()).handleAsync((maturitaFile, t) -> {
             if (t != null) {
-                throw new RuntimeException(t);
+                ExceptionHandler.handleSevere(t, "Failed to load exam from .MATURITA file");
             }
             this.exam = maturitaFile.exam();
+
             if (!assigningInProgress) {
                 this.answers = maturitaFile.answerSet();
                 this.questionAnswerMap = maturitaFile.qaMap();
             }
-            System.out.println("exam loaded from zip");
+
+            LOGGER.log(System.Logger.Level.INFO, "Loaded exam from .MATURITA file");
             this.archivePath = file;
-            return null;
-        }).thenRun(() -> {
             if (assigningInProgress) {
                 changeScene("import-assign.fxml");
             } else {
                 homeScreen();
             }
+            return null;
         });
     }
 
@@ -194,7 +198,7 @@ public class MaturitaApplication extends Application {
             loadingScreen();
             answerSetParser.parseAsync(file).handleAsync((an, t) -> {
                 if (t != null) {
-                    throw new RuntimeException(t);
+                    ExceptionHandler.handleSevere(t, "Failed to parse an answer set PDF");
                 }
                 this.answers = an;
                 assigningInProgress = true;
@@ -205,7 +209,7 @@ public class MaturitaApplication extends Application {
                 changeScene("import-view.fxml");
             });
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.handleSevere(e, "Failed to load answer set PDF");
         }
     }
 
@@ -222,11 +226,13 @@ public class MaturitaApplication extends Application {
     }
 
     public void closeExam() {
+        saveCurrentOpenedExam();
         changeScene("welcome-view.fxml");
         this.exam = null;
         this.answers = null;
         this.questionAnswerMap = null;
         this.assigningInProgress = false;
+        ImageCache.getInstance().clear();
     }
 
     @Override

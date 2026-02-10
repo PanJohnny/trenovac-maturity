@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.panjohnny.trenovacmaturity.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -51,7 +52,7 @@ public class QuestionAnswerMap extends LinkedHashMap<Question, List<Answer>> imp
 
                 map.put(q, answers);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                ExceptionHandler.handleWarning(e, "Failed to deserialize question-answer map entry: " + numStr);
             }
         }
 

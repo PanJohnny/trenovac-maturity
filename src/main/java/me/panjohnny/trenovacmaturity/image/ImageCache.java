@@ -3,8 +3,6 @@ package me.panjohnny.trenovacmaturity.image;
 import javafx.scene.image.Image;
 import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;

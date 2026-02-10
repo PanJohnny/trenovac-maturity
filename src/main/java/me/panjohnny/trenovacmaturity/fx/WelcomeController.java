@@ -3,14 +3,8 @@ package me.panjohnny.trenovacmaturity.fx;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
-import javafx.stage.FileChooser;
-import me.panjohnny.trenovacmaturity.MaturitaApplication;
-
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 public class WelcomeController extends BaseController {
     @FXML

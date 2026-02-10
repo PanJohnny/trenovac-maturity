@@ -11,7 +11,7 @@ import java.util.List;
 public class Exam extends ArrayList<Question> implements JsonSerializable {
 
     private int currentQuestionIndex = 0;
-    private final String meta;
+    private String meta;
 
     public Exam(String meta) {
         this.meta = meta;
@@ -68,5 +68,9 @@ public class Exam extends ArrayList<Question> implements JsonSerializable {
 
     public String getMeta() {
         return meta;
+    }
+
+    public void setMeta(String meta) {
+        this.meta = meta;
     }
 }

@@ -1,5 +1,6 @@
 package me.panjohnny.trenovacmaturity.pdf;
 
+import me.panjohnny.trenovacmaturity.ExceptionHandler;
 import me.panjohnny.trenovacmaturity.fs.Archiver;
 import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
 import me.panjohnny.trenovacmaturity.fx.LoadingController;
@@ -23,6 +24,14 @@ public class ExamPDFParser {
 
     public Exam parse(File file) throws IOException {
         TemporaryFileSystemManager.cleanup();
+
+        if (!file.exists() || !file.canRead()) {
+            throw new IOException("File does not exist or cannot be read: " + file.getAbsolutePath());
+        }
+
+        if (!file.getName().toLowerCase().endsWith(".pdf")) {
+            throw new IOException("File is not a PDF: " + file.getAbsolutePath());
+        }
 
         try (PDDocument doc = Loader.loadPDF(file)) {
             PDFRenderer renderer = new PDFRenderer(doc);
@@ -93,13 +102,14 @@ public class ExamPDFParser {
                 number++;
             }
 
-            Archiver.createArchive(metaText, exam, null, null);
+            Archiver.createArchive(metaText, exam, null, null, null);
 
             LoadingController.setProgress(1.0d);
 
             return exam;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.handleSevere(e, "Failed to parse exam PDF");
+            return null;
         }
     }
 

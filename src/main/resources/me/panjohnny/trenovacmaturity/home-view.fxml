@@ -4,6 +4,7 @@
 <?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <VBox prefHeight="600.0" prefWidth="720.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.MaturitaController">
     <padding>
@@ -30,7 +31,7 @@
             <Menu mnemonicParsing="false" text="Pomoc">
                 <items>
                     <MenuItem mnemonicParsing="false" onAction="#openCERMAT" text="Stáhnout testy" />
-                    <MenuItem mnemonicParsing="false" text="O aplikaci" onAction="#info" />
+                    <MenuItem mnemonicParsing="false" onAction="#info" text="O aplikaci" />
                 </items>
             </Menu>
         </menus>
@@ -44,9 +45,19 @@
     <HBox prefHeight="100.0" prefWidth="200.0">
         <children>
             <Label fx:id="infoLabel" />
+            <TextField fx:id="examText" alignment="CENTER" onKeyTyped="#changeName" prefHeight="45.0" prefWidth="321.0" promptText="Název testu" HBox.hgrow="ALWAYS">
+            <font>
+               <Font name="System Bold" size="21.0" />
+            </font>
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+            <HBox.margin>
+               <Insets left="10.0" />
+            </HBox.margin></TextField>
         </children>
     </HBox>
-   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="ALWAYS">
       <children>
           <Canvas fx:id="canvas" height="400.0" width="500.0" HBox.hgrow="ALWAYS" />
           <VBox fx:id="answerBox" spacing="10.0">
@@ -59,13 +70,13 @@
             <Button mnemonicParsing="false" onAction="#onPrevClick" text="Předchozí" />
             <Button mnemonicParsing="false" onAction="#onNextClick" text="Další" />
             <Separator orientation="VERTICAL" />
-            <TextField promptText="Štítky oddělené čárkou" HBox.hgrow="ALWAYS" fx:id="tagInput" onKeyTyped="#tagInputChanged"/>
-            <Button mnemonicParsing="false" onAction="#selectTags" text="Vybrat predefinované"/>
+            <TextField fx:id="tagInput" onKeyTyped="#tagInputChanged" promptText="Štítky oddělené čárkou" HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" onAction="#selectTags" text="Vybrat predefinované" />
             <Separator orientation="VERTICAL" />
             <Button mnemonicParsing="false" onAction="#showAnswer" text="Zobrazit odpověď" />
         </children>
     </HBox>
-   <HBox prefHeight="200.0" prefWidth="200.0" fx:id="hboxInfo">
+   <HBox fx:id="hboxInfo" prefHeight="200.0" prefWidth="200.0">
       <children>
           <ScrollPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
               <content>

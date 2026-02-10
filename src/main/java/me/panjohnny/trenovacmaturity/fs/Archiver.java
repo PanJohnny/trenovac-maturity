@@ -4,13 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import me.panjohnny.trenovacmaturity.MaturitaApplication;
 import me.panjohnny.trenovacmaturity.fx.LoadingController;
-import me.panjohnny.trenovacmaturity.image.ImageCache;
 import me.panjohnny.trenovacmaturity.model.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,8 +19,12 @@ import java.util.zip.ZipOutputStream;
 
 public class Archiver {
 
-    public static MaturitaFile createArchive(String name, Exam exam, @Nullable AnswerSet answersSet, @Nullable QuestionAnswerMap qaMap) throws IOException {
-        Path path = Path.of(name + ".maturita");
+    public static MaturitaFile createArchive(String name, Exam exam, @Nullable AnswerSet answersSet, @Nullable QuestionAnswerMap qaMap, @Nullable Path archivePath) throws IOException {
+        Path path = archivePath;
+
+        if (path == null) {
+            path = Path.of(name + ".maturita");
+        }
 
         try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(path))) {
             zip.putNextEntry(new ZipEntry("questions.json"));

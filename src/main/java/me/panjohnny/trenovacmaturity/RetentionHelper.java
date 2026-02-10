@@ -1,6 +1,7 @@
 package me.panjohnny.trenovacmaturity;
 
 import java.io.File;
+import java.io.FileReader;
 import java.util.Properties;
 
 public class RetentionHelper {
@@ -12,10 +13,10 @@ public class RetentionHelper {
         propertiesFile = path;
         try {
             if (path.exists()) {
-                properties.load(new java.io.FileReader(path));
+                properties.load(new FileReader(path));
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.handleWarning(e, "Failed to load retention file");
         }
     }
 
@@ -36,7 +37,7 @@ public class RetentionHelper {
         try {
             properties.store(new java.io.FileWriter(propertiesFile), "Retention Data for Trénovač Maturity");
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            ExceptionHandler.handleWarning(e, "Failed to save retention properties file");
         }
     }
 }

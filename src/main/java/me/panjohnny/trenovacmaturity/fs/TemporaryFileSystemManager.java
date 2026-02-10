@@ -18,7 +18,6 @@ public class TemporaryFileSystemManager {
                         .forEach(File::delete);
             }
         }
-        Files.createDirectories(TEMP_FOLDER);
     }
 
     public static void ensureTempFolderExists() throws IOException {

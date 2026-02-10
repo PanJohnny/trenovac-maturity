@@ -3,6 +3,7 @@ package me.panjohnny.trenovacmaturity.model;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.panjohnny.trenovacmaturity.ExceptionHandler;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -77,7 +78,7 @@ public class AnswerSet extends ArrayList<Answer> implements JsonSerializable {
                         map.put(question, answers);
                         continue;
                     } catch (Exception e) {
-                        throw new RuntimeException(e);
+                        ExceptionHandler.handleWarning(e, "Failed to parse question text for auto-assigning answers: " + question.text());
                     }
                 }
             }

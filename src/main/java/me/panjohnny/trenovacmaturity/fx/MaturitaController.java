@@ -2,22 +2,16 @@ package me.panjohnny.trenovacmaturity.fx;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Ellipse;
 import javafx.stage.*;
-import me.panjohnny.trenovacmaturity.MaturitaApplication;
 import me.panjohnny.trenovacmaturity.model.Answer;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class MaturitaController extends BaseController {
@@ -35,6 +29,9 @@ public class MaturitaController extends BaseController {
 
     @FXML
     private TextField tagInput;
+
+    @FXML
+    private TextField examText;
 
     @FXML
     private HBox hboxInfo;
@@ -91,6 +88,11 @@ public class MaturitaController extends BaseController {
     }
 
     private void redraw() {
+        if (exam == null || exam.getCurrentQuestion() == null) {
+            application.homeScreen();
+            return;
+        }
+
         double width = exam.getCurrentQuestion().image().getWidth();
         double height = exam.getCurrentQuestion().image().getHeight();
 
@@ -124,6 +126,7 @@ public class MaturitaController extends BaseController {
         }
 
         infoLabel.setText(exam.getCurrentQuestion().number() + "/" + exam.length());
+        examText.setText(exam.getMeta());
         answerBox.getChildren().clear();
     }
 
@@ -194,10 +197,15 @@ public class MaturitaController extends BaseController {
 
     private Button addTagButton(String tag) {
         Button b = new Button(tag);
-        b.setOnAction((e) -> {
+        b.setOnAction((_unused) -> {
             tagInput.setText(b.getText() + "," + tagInput.getText());
             tagInputChanged();
         });
         return b;
+    }
+
+    @FXML
+    protected void changeName() {
+        exam.setMeta(examText.getText());
     }
 }

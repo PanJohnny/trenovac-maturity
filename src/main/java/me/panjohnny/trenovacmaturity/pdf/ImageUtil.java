@@ -1,8 +1,6 @@
 package me.panjohnny.trenovacmaturity.pdf;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
