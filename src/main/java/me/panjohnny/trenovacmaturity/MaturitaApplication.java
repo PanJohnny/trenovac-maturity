@@ -4,7 +4,9 @@ import atlantafx.base.theme.NordDark;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import me.panjohnny.trenovacmaturity.fs.Archiver;
@@ -28,6 +30,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class MaturitaApplication extends Application {
+    private final double width;
+    private final double height;
+
     private Stage primaryStage;
     private final RetentionHelper helper;
     private final ExamPDFParser examPDFParser;
@@ -49,6 +54,9 @@ public class MaturitaApplication extends Application {
         this.helper = new RetentionHelper(new File("maturita-helper.properties"));
         this.examPDFParser = new ExamPDFParser();
         this.answerSetParser = new AnswerSetParser();
+
+        width = 980;
+        height = 720;
     }
 
     @Override
@@ -56,6 +64,14 @@ public class MaturitaApplication extends Application {
         ExceptionHandler.init();
 
         primaryStage = stage;
+
+        stage.setOnShown(e -> {
+            stage.centerOnScreen();
+        });
+
+        stage.setWidth(width);
+        stage.setHeight(height);
+
         changeScene("welcome-view.fxml");
         stage.setTitle("Trénovač maturity");
         Application.setUserAgentStylesheet(new NordDark().getUserAgentStylesheet());
@@ -71,7 +87,7 @@ public class MaturitaApplication extends Application {
             FXMLLoader fxmlLoader = new FXMLLoader(MaturitaApplication.class.getResource(resource));
             Scene scene = null;
             try {
-                scene = new Scene(fxmlLoader.load(), 720, 580);
+                scene = new Scene(fxmlLoader.load());
             } catch (IOException e) {
                 ExceptionHandler.handleSevere(e, "Failed to load scene file");
             }

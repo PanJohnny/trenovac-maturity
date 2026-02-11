@@ -1,18 +1,29 @@
 package me.panjohnny.trenovacmaturity.fx;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
 import javafx.stage.*;
+import me.panjohnny.trenovacmaturity.MaturitaApplication;
 import me.panjohnny.trenovacmaturity.model.Answer;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 
+import java.awt.*;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MaturitaController extends BaseController {
     @FXML
@@ -35,6 +46,12 @@ public class MaturitaController extends BaseController {
 
     @FXML
     private HBox hboxInfo;
+
+    @FXML
+    private ProgressBar timeBar;
+
+    @FXML
+    private Label timeLabel;
 
     private final int CANVAS_MAX_WIDTH = 1000;
     private final int CANVAS_MAX_HEIGHT = 700;
@@ -131,12 +148,96 @@ public class MaturitaController extends BaseController {
     }
 
     private Exam exam;
+    private Timer timer;
 
     @Override
     public void loadAppData() {
+        stopTimer();
+
         exam = application.getExam();
         redraw();
     }
+
+    int timeSeconds = 0;
+    int timeLimitSeconds = 60 * 135; // 135 mimut
+
+    @FXML
+    private void startTimer() {
+        // ask the user how many minutes they want to set for the timer
+        TextInputDialog dialog = new TextInputDialog("135");
+        dialog.setTitle("Nastavit časovač");
+        dialog.setHeaderText("Nastavit časovač");
+        dialog.setContentText("Zadejte čas v minutách:");
+        dialog.initOwner(application.getPrimaryStage());
+
+        dialog.initModality(Modality.NONE);
+        dialog.showAndWait().ifPresent(input -> {
+            try {
+                int minutes = Integer.parseInt(input);
+                timeLimitSeconds = minutes * 60;
+            } catch (NumberFormatException e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Chyba");
+                alert.setHeaderText("Neplatný vstup");
+                alert.setContentText("Zadejte platný počet minut.");
+                alert.initOwner(application.getPrimaryStage());
+                alert.initModality(Modality.APPLICATION_MODAL);
+                alert.showAndWait();
+            }
+        });
+
+        if (timer != null) {
+            timer.cancel();
+        }
+
+        timer = new Timer();
+
+        timeSeconds = 0;
+        timeBar.setProgress(0);
+        timeBar.getParent().setVisible(true);
+        timeBar.getParent().minHeight(10);
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                if (application.getExam() == null) {
+                    timer.cancel();
+                    return;
+                }
+                timeSeconds++;
+                int minutes = timeSeconds / 60;
+                int seconds = timeSeconds % 60;
+                Platform.runLater(() -> {
+                    timeLabel.setText(String.format("%02d:%02d", minutes, seconds));
+                    timeBar.setProgress((double) timeSeconds / timeLimitSeconds);
+                });
+
+                // check if timer finished
+                if (timeSeconds >= timeLimitSeconds) {
+                    Platform.runLater(() -> {
+                        stopTimer();
+                        var g = canvas.getGraphicsContext2D();
+                        g.setFont(new Font("system", 50));
+                        g.setFill(Paint.valueOf("rgb(255, 0, 0)"));
+                        g.fillText("Čas vypršel", 100, 50);
+                    });
+
+                    Toolkit.getDefaultToolkit().beep();
+                }
+            }
+        }, 1000, 1000);
+    }
+
+    @FXML
+    private void stopTimer() {
+        if (timer != null) {
+            timer.cancel();
+        }
+
+        timeBar.getParent().minHeight(0);
+        timeBar.getParent().setVisible(false);
+    }
+
 
     @FXML
     public void closeExam() {
