@@ -5,18 +5,17 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox alignment="center" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.LoadingController">
-   <children>
-      <Label text="Načítání, čekejte prosím">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Label>
-      <ProgressBar fx:id="progress" prefWidth="500.0" progress="0.0">
-         <VBox.margin>
-            <Insets top="20.0" />
-         </VBox.margin>
-      </ProgressBar>
+<VBox alignment="center" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.LoadingController">
+   <Label text="Načítání, čekejte prosím">
+      <font>
+         <Font size="20.0"/>
+      </font>
+   </Label>
+   <ProgressBar fx:id="progress" prefWidth="500.0" progress="0.0">
+      <VBox.margin>
+         <Insets top="20.0"/>
+      </VBox.margin>
+   </ProgressBar>
 
-   </children>
 </VBox>

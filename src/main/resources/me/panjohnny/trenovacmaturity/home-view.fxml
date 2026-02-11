@@ -7,104 +7,91 @@
 <?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
-<VBox prefHeight="600.0" prefWidth="720.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.MaturitaController">
+<VBox prefHeight="600.0" prefWidth="720.0" spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12"
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.MaturitaController">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
     <MenuBar>
-        <menus>
-            <Menu mnemonicParsing="false" text="Soubor">
-                <items>
-               <MenuItem mnemonicParsing="false" onAction="#openZIP" text="Otevřít maturitu" />
-               <MenuItem mnemonicParsing="false" onAction="#openPDF" text="Importovat PDF" />
-                    <MenuItem mnemonicParsing="false" onAction="#openAnswerSetPDF" text="Importovat odpovědi" />
-               <SeparatorMenuItem mnemonicParsing="false" />
-                    <MenuItem mnemonicParsing="false" onAction="#closeExam" text="Zavřít test" />
-               <MenuItem mnemonicParsing="false" onAction="#closeApp" text="Zavřít okno" />
-                </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Zobrazit">
-                <items>
-               <MenuItem mnemonicParsing="false" onAction="#openMeta" text="Zobrazit metadata" />
-               <MenuItem mnemonicParsing="false" onAction="#openArchive" text="Zobrazit soubor s daty" />
-                    <MenuItem mnemonicParsing="false" onAction="#startTimer" text="Spustit časomíru" />
-                </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Pomoc">
-                <items>
-                    <MenuItem mnemonicParsing="false" onAction="#openCERMAT" text="Stáhnout testy" />
-                    <MenuItem mnemonicParsing="false" onAction="#info" text="O aplikaci" />
-                </items>
-            </Menu>
-        </menus>
-      <opaqueInsets>
-         <Insets />
-      </opaqueInsets>
-      <VBox.margin>
-         <Insets left="-20.0" right="-20.0" top="-20.0" />
-      </VBox.margin>
+        <opaqueInsets>
+            <Insets/>
+        </opaqueInsets>
+        <VBox.margin>
+            <Insets left="-20.0" right="-20.0" top="-20.0"/>
+        </VBox.margin>
+        <Menu mnemonicParsing="false" text="Soubor">
+            <MenuItem mnemonicParsing="false" onAction="#openZIP" text="Otevřít maturitu"/>
+            <MenuItem mnemonicParsing="false" onAction="#openPDF" text="Importovat PDF"/>
+            <MenuItem mnemonicParsing="false" onAction="#openAnswerSetPDF" text="Importovat odpovědi"/>
+            <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" onAction="#closeExam" text="Zavřít test"/>
+            <MenuItem mnemonicParsing="false" onAction="#closeApp" text="Zavřít okno"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Zobrazit">
+            <MenuItem mnemonicParsing="false" onAction="#openMeta" text="Zobrazit metadata"/>
+            <MenuItem mnemonicParsing="false" onAction="#openArchive" text="Zobrazit soubor s daty"/>
+            <MenuItem mnemonicParsing="false" onAction="#startTimer" text="Spustit časomíru"/>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Pomoc">
+            <MenuItem mnemonicParsing="false" onAction="#openCERMAT" text="Stáhnout testy"/>
+            <MenuItem mnemonicParsing="false" onAction="#info" text="O aplikaci"/>
+        </Menu>
     </MenuBar>
     <HBox prefHeight="10.0" prefWidth="100.0" minHeight="10.0" spacing="10.0">
-        <ProgressBar fx:id="timeBar" maxWidth="Infinity" prefHeight="10.0" prefWidth="100.0" progress="0.0" HBox.hgrow="ALWAYS" />
+        <ProgressBar fx:id="timeBar" maxWidth="Infinity" prefHeight="10.0" prefWidth="100.0" progress="0.0"
+                     HBox.hgrow="ALWAYS"/>
         <Label fx:id="timeLabel" layoutX="10.0" layoutY="10.0">
             <font>
-                <Font size="10.0" />
+                <Font size="10.0"/>
             </font>
         </Label>
-        <Button mnemonicParsing="false" onAction="#stopTimer" prefWidth="10.0" prefHeight="10.0" maxHeight="10.0" maxWidth="10.0" style="-fx-padding: 0;">
+        <Button mnemonicParsing="false" onAction="#stopTimer" prefWidth="10.0" prefHeight="10.0" maxHeight="10.0"
+                maxWidth="10.0" style="-fx-padding: 0;">
             <graphic>
                 <FontIcon iconLiteral="ci-stop-filled-alt" iconSize="2"/>
             </graphic>
         </Button>
     </HBox>
     <HBox prefHeight="100.0" prefWidth="200.0">
-        <children>
-            <Label fx:id="infoLabel">
+        <Label fx:id="infoLabel">
             <font>
-               <Font size="32.0" />
-            </font></Label>
-            <TextField fx:id="examText" alignment="CENTER" onKeyTyped="#changeName" prefHeight="45.0" prefWidth="321.0" promptText="Název testu" HBox.hgrow="ALWAYS">
+                <Font size="32.0"/>
+            </font>
+        </Label>
+        <TextField fx:id="examText" alignment="CENTER" onKeyTyped="#changeName" prefHeight="45.0" prefWidth="321.0"
+                   promptText="Název testu" HBox.hgrow="ALWAYS">
             <font>
-               <Font name="System Bold" size="21.0" />
+                <Font name="System Bold" size="21.0"/>
             </font>
             <opaqueInsets>
-               <Insets />
+                <Insets/>
             </opaqueInsets>
             <HBox.margin>
-               <Insets left="10.0" right="10.0" />
-            </HBox.margin></TextField>
-        </children>
+                <Insets left="10.0" right="10.0"/>
+            </HBox.margin>
+        </TextField>
     </HBox>
-   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="SOMETIMES">
-      <children>
-          <Canvas fx:id="canvas" height="400.0" width="500.0" HBox.hgrow="ALWAYS" />
-          <VBox fx:id="answerBox" spacing="10.0">
+    <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" VBox.vgrow="SOMETIMES">
+        <Canvas fx:id="canvas" height="400.0" width="500.0" HBox.hgrow="ALWAYS"/>
+        <VBox fx:id="answerBox" spacing="10.0">
 
-          </VBox>
-      </children>
-   </HBox>
-    <HBox spacing="20" VBox.vgrow="NEVER">
-        <children>
-            <Button mnemonicParsing="false" onAction="#onPrevClick" text="Předchozí" />
-            <Button mnemonicParsing="false" onAction="#onNextClick" text="Další" />
-            <Separator orientation="VERTICAL" />
-            <TextField fx:id="tagInput" onKeyTyped="#tagInputChanged" promptText="Štítky oddělené čárkou" HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" onAction="#selectTags" text="Vybrat predefinované" />
-            <Separator orientation="VERTICAL" />
-            <Button mnemonicParsing="false" onAction="#showAnswer" text="Zobrazit odpověď" />
-        </children>
+        </VBox>
     </HBox>
-   <HBox fx:id="hboxInfo" prefHeight="200.0" prefWidth="200.0">
-      <children>
-          <ScrollPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
-              <content>
-                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-                      <children>
-                          <Label fx:id="welcomeText" />
-                      </children>
-                  </AnchorPane>
-              </content>
-          </ScrollPane>
-      </children>
-   </HBox>
+    <HBox spacing="20" VBox.vgrow="NEVER">
+        <Button mnemonicParsing="false" onAction="#onPrevClick" text="Předchozí"/>
+        <Button mnemonicParsing="false" onAction="#onNextClick" text="Další"/>
+        <Separator orientation="VERTICAL"/>
+        <TextField fx:id="tagInput" onKeyTyped="#tagInputChanged" promptText="Štítky oddělené čárkou"
+                   HBox.hgrow="ALWAYS"/>
+        <Button mnemonicParsing="false" onAction="#selectTags" text="Vybrat predefinované"/>
+        <Separator orientation="VERTICAL"/>
+        <Button mnemonicParsing="false" onAction="#showAnswer" text="Zobrazit odpověď"/>
+    </HBox>
+    <HBox fx:id="hboxInfo" prefHeight="200.0" prefWidth="200.0">
+        <ScrollPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                <Label fx:id="welcomeText"/>
+            </AnchorPane>
+        </ScrollPane>
+    </HBox>
 </VBox>

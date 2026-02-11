@@ -4,13 +4,10 @@ import atlantafx.base.theme.NordDark;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 import me.panjohnny.trenovacmaturity.fs.Archiver;
-import me.panjohnny.trenovacmaturity.fs.MaturitaFile;
 import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
 import me.panjohnny.trenovacmaturity.fx.BaseController;
 
@@ -60,14 +57,12 @@ public class MaturitaApplication extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) {
         ExceptionHandler.init();
 
         primaryStage = stage;
 
-        stage.setOnShown(e -> {
-            stage.centerOnScreen();
-        });
+        stage.setOnShown(_ -> stage.centerOnScreen());
 
         stage.setWidth(width);
         stage.setHeight(height);
@@ -220,9 +215,8 @@ public class MaturitaApplication extends Application {
                 assigningInProgress = true;
 
                 LOGGER.log(System.Logger.Level.INFO, "Answers parsed from PDF");
-                return null;
-            }).thenRun(() -> {
                 changeScene("import-view.fxml");
+                return null;
             });
         } catch (Exception e) {
             ExceptionHandler.handleSevere(e, "Failed to load answer set PDF");

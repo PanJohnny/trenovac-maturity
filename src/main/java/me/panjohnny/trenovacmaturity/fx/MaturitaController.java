@@ -15,7 +15,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.*;
-import me.panjohnny.trenovacmaturity.MaturitaApplication;
 import me.panjohnny.trenovacmaturity.model.Answer;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
@@ -52,9 +51,6 @@ public class MaturitaController extends BaseController {
 
     @FXML
     private Label timeLabel;
-
-    private final int CANVAS_MAX_WIDTH = 1000;
-    private final int CANVAS_MAX_HEIGHT = 700;
 
     @FXML
     protected void onPrevClick() {
@@ -119,12 +115,14 @@ public class MaturitaController extends BaseController {
             predBox.setVisible(false);
         }
 
+        int CANVAS_MAX_WIDTH = 1000;
         if (width > CANVAS_MAX_WIDTH) {
             double scale = (double) CANVAS_MAX_WIDTH / width;
             width = CANVAS_MAX_WIDTH;
             height = (int) (height * scale);
         }
 
+        int CANVAS_MAX_HEIGHT = 700;
         if (height > CANVAS_MAX_HEIGHT) {
             double scale = (double) CANVAS_MAX_HEIGHT / height;
             height = CANVAS_MAX_HEIGHT;
@@ -298,7 +296,7 @@ public class MaturitaController extends BaseController {
 
     private Button addTagButton(String tag) {
         Button b = new Button(tag);
-        b.setOnAction((_unused) -> {
+        b.setOnAction((_) -> {
             tagInput.setText(b.getText() + "," + tagInput.getText());
             tagInputChanged();
         });
