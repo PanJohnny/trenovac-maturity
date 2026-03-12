@@ -31,4 +31,29 @@ public abstract class BaseController {
     public void openAnswerSetPDF() {
         Actions.openAnswerSetPDF(application);
     }
+
+    @FXML
+    public void createTraining() {
+        Actions.createTraining(application);
+    }
+
+    @FXML
+    public void openTraining() {
+        Actions.openTraining(application);
+    }
+
+    @FXML
+    public void closeExam() {
+        Actions.closeExam(application);
+    }
+
+    @FXML
+    public void closeApp() {
+        Actions.closeApplication();
+    }
+
+    @FXML
+    public void startPanicMode() {
+        Actions.startPanicMode(application);
+    }
 }

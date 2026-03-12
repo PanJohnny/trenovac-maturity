@@ -8,39 +8,11 @@
 <?import org.kordamp.ikonli.javafx.*?>
 
 <VBox spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.MaturitaController">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.TrainingPanicController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
-    <MenuBar>
-        <opaqueInsets>
-            <Insets/>
-        </opaqueInsets>
-        <VBox.margin>
-            <Insets left="-20.0" right="-20.0" top="-20.0"/>
-        </VBox.margin>
-        <Menu mnemonicParsing="false" text="Soubor">
-            <MenuItem mnemonicParsing="false" onAction="#openZIP" text="Otevřít maturitu"/>
-            <MenuItem mnemonicParsing="false" onAction="#openPDF" text="Importovat PDF"/>
-            <MenuItem mnemonicParsing="false" onAction="#openAnswerSetPDF" text="Importovat odpovědi"/>
-            <SeparatorMenuItem mnemonicParsing="false"/>
-            <MenuItem mnemonicParsing="false" onAction="#openTraining" text="Otevřít trénink"/>
-            <MenuItem mnemonicParsing="false" onAction="#createTraining" text="Vytvořit trénink"/>
-            <MenuItem mnemonicParsing="false" onAction="#startPanicMode" text="Režim paniky"/>
-            <SeparatorMenuItem mnemonicParsing="false"/>
-            <MenuItem mnemonicParsing="false" onAction="#closeExam" text="Zavřít test/trénink"/>
-            <MenuItem mnemonicParsing="false" onAction="#closeApp" text="Zavřít okno"/>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Zobrazit">
-            <MenuItem mnemonicParsing="false" onAction="#openMeta" text="Zobrazit metadata"/>
-            <MenuItem mnemonicParsing="false" onAction="#openArchive" text="Zobrazit soubor s daty"/>
-            <MenuItem mnemonicParsing="false" onAction="#startTimer" text="Spustit časomíru"/>
-        </Menu>
-        <Menu mnemonicParsing="false" text="Pomoc">
-            <MenuItem mnemonicParsing="false" onAction="#openCERMAT" text="Stáhnout testy"/>
-            <MenuItem mnemonicParsing="false" onAction="#info" text="O aplikaci"/>
-        </Menu>
-    </MenuBar>
+    <Button onAction="#closeExam">Ukončit trénink</Button>
     <HBox prefHeight="10.0" prefWidth="100.0" minHeight="10.0" spacing="10.0">
         <ProgressBar fx:id="timeBar" maxWidth="Infinity" prefHeight="10.0" prefWidth="100.0" progress="0.0"
                      HBox.hgrow="ALWAYS"/>
@@ -82,7 +54,6 @@
         </VBox>
     </HBox>
     <HBox spacing="20" VBox.vgrow="NEVER">
-        <Button mnemonicParsing="false" onAction="#onPrevClick" text="Předchozí"/>
         <Button mnemonicParsing="false" onAction="#onNextClick" text="Další"/>
         <Separator orientation="VERTICAL"/>
         <TextField fx:id="tagInput" onKeyTyped="#tagInputChanged" promptText="Štítky oddělené čárkou"

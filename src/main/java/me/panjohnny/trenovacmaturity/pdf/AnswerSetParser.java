@@ -25,6 +25,8 @@ public class AnswerSetParser {
             // Kód textu: ...
             String meta = PDFUtil.extractMetaText(doc, 0.07);
 
+            String documentFootprint = PDFUtil.calculateDocumentFootprint(file);
+
             LinkedHashMap<String, String> regionText = new LinkedHashMap<>();
 
             double currentProgress = 0d;
@@ -44,7 +46,7 @@ public class AnswerSetParser {
 
                     Rectangle region = new Rectangle(0, y1, image.getWidth(), y2 - y1);
                     BufferedImage regionImage = image.getSubimage(region.x, region.y, region.width, region.height);
-                    String regionName = "answer_region_" + pageIndex + "_" + i;
+                    String regionName = documentFootprint + "_answer_region_" + pageIndex + "_" + i;
 
                     stripper.addRegion(regionName, new Rectangle(region.x * 72 / ImageUtil.DPI, region.y * 72 / ImageUtil.DPI, region.width * 72 / ImageUtil.DPI, region.height * 72 / ImageUtil.DPI));
 
@@ -86,7 +88,7 @@ public class AnswerSetParser {
         }
     }
 
-    public CompletableFuture<AnswerSet> parseAsync(File file) throws IOException {
+    public CompletableFuture<AnswerSet> parseAsync(File file) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return parse(file);

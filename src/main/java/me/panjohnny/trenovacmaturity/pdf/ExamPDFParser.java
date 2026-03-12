@@ -36,6 +36,8 @@ public class ExamPDFParser {
         try (PDDocument doc = Loader.loadPDF(file)) {
             PDFRenderer renderer = new PDFRenderer(doc);
 
+            String documentFootprint = PDFUtil.calculateDocumentFootprint(file);
+
             double approxProgressPerPage = 1.0 / (double) doc.getNumberOfPages();
             double currentProgress = 0.0;
 
@@ -63,7 +65,7 @@ public class ExamPDFParser {
                 for (int i = 0; i < regions.size(); i++) {
                     Rectangle region = regions.get(i);
 
-                    String regionName = "region_" + pageIndex + "_" + i;
+                    String regionName = documentFootprint + "_region_" + pageIndex + "_" + i;
 
                     stripper.addRegion(regionName, new Rectangle(region.x * 72 / ImageUtil.DPI, region.y * 72 / ImageUtil.DPI, region.width * 72 / ImageUtil.DPI, region.height * 72 / ImageUtil.DPI));
 

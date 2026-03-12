@@ -19,7 +19,7 @@ import java.util.zip.ZipOutputStream;
 
 public class Archiver {
 
-    public static MaturitaFile createArchive(String name, Exam exam, @Nullable AnswerSet answersSet, @Nullable QuestionAnswerMap qaMap, @Nullable Path archivePath) throws IOException {
+    public static void createArchive(String name, Exam exam, @Nullable AnswerSet answersSet, @Nullable QuestionAnswerMap qaMap, @Nullable Path archivePath) throws IOException {
         Path path = archivePath;
 
         if (path == null) {
@@ -76,10 +76,55 @@ public class Archiver {
         }
 
         MaturitaApplication.LOGGER.log(System.Logger.Level.INFO, "Exam written to file {0}", path);
-
-        return new MaturitaFile(path, exam, answersSet, qaMap);
     }
 
+    public static void createTrainingArchive(Training training) throws IOException {
+        String name = training.getMeta();
+        String fileName = name.trim() + ".training.maturita";
+
+        Path path = Path.of(fileName);
+
+        try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(path))) {
+            zip.putNextEntry(new ZipEntry("training.json"));
+            zip.write(training.serialize().toString().getBytes(StandardCharsets.UTF_8));
+            zip.closeEntry();
+
+            zip.putNextEntry(new ZipEntry("meta.txt"));
+            zip.write(training.getMeta().getBytes(StandardCharsets.UTF_8));
+            zip.closeEntry();
+
+            for (Question question : training) {
+                zip.putNextEntry(new ZipEntry(question.region_id() + ".png"));
+                String url = question.image().getUrl();
+
+                // Opravený způsob načítání ze souboru
+                Path imagePath = Path.of(URI.create(url));
+                byte[] bytes = Files.readAllBytes(imagePath);
+                zip.write(bytes);
+
+                zip.closeEntry();
+            }
+
+            AnswerSet answersSet = training.getAnswers();
+            if (answersSet != null) {
+                for (Answer a : answersSet) {
+                    zip.putNextEntry(new ZipEntry(a.region_id() + ".png"));
+                    String url = a.image().getUrl();
+
+                    Path imagePath = Path.of(URI.create(url));
+                    byte[] bytes = Files.readAllBytes(imagePath);
+                    zip.write(bytes);
+
+                    zip.closeEntry();
+                }
+            }
+        } catch (IOException e) {
+            // Vyčistit neúplný soubor
+            Files.deleteIfExists(path);
+            throw e;
+        }
+
+    }
 
     public static MaturitaFile loadArchive(Path path) throws IOException {
         ZipInputStream inputStream = new ZipInputStream(Files.newInputStream(path));
@@ -140,10 +185,63 @@ public class Archiver {
         return new MaturitaFile(path, exam, answers, qaMap);
     }
 
+    public static Training loadTraining(Path path) throws IOException {
+        ZipInputStream inputStream = new ZipInputStream(Files.newInputStream(path));
+
+        Gson gson = new Gson();
+
+        Training training;
+
+        JsonElement trainingEl = null;
+
+        double progress = 0.0d;
+        double step = 1.0d / 30d;
+
+        LoadingController.setProgress(progress);
+
+        ZipEntry entry;
+        while ((entry = inputStream.getNextEntry()) != null) {
+            if (entry.getName().endsWith(".png")) {
+                byte[] image = inputStream.readAllBytes();
+                String fileName = entry.getName();
+
+                TemporaryFileSystemManager.writeBytes(fileName, image);
+            } else if (entry.getName().equals("training.json")) {
+                trainingEl = gson.fromJson(new InputStreamReader(inputStream, StandardCharsets.UTF_8), JsonElement.class);
+            }
+
+            progress += step;
+            LoadingController.setProgress(progress);
+            inputStream.closeEntry();
+        }
+
+        inputStream.close();
+
+        if (trainingEl != null) {
+            training = Training.deserialize(trainingEl);
+        } else {
+            throw new IOException("Archive is missing questions.json");
+        }
+
+        LoadingController.setProgress(1d);
+
+        return training;
+    }
+
     public static CompletableFuture<MaturitaFile> loadArchiveAsync(Path path) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return loadArchive(path);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    public static CompletableFuture<Training> loadTrainingAsync(Path path) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                return loadTraining(path);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

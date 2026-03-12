@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="400.0" prefWidth="600.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.WelcomeController">
+<VBox stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.WelcomeController">
     <Label alignment="TOP_CENTER" contentDisplay="CENTER" text="Trénovač na maturitu" VBox.vgrow="ALWAYS">
       <padding>
          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -47,4 +47,21 @@
         <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openCERMAT" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Stáhnout nové testy" HBox.hgrow="ALWAYS" />
     </HBox>
 
+    <Label text="Trénink">
+        <VBox.margin>
+            <Insets left="20.0" right="20.0" />
+        </VBox.margin>
+        <font>
+            <Font name="System Bold" size="19.0" />
+        </font>
+    </Label>
+
+    <HBox alignment="CENTER" maxHeight="100.0" prefHeight="100.0" prefWidth="200.0" spacing="10" VBox.vgrow="ALWAYS">
+        <VBox.margin>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        </VBox.margin>
+        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#createTraining" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Vytvořit trénink" HBox.hgrow="ALWAYS" />
+        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#openTraining" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Otevřít trénink" HBox.hgrow="ALWAYS" />
+        <Button maxWidth="Infinity" mnemonicParsing="false" onAction="#startPanicMode" prefHeight="200.0" prefWidth="200.0" styleClass="linkpane" text="Režim paniky" HBox.hgrow="ALWAYS" />
+    </HBox>
 </VBox>

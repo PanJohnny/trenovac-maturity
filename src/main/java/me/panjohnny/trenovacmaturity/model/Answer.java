@@ -4,9 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.scene.image.Image;
 import me.panjohnny.trenovacmaturity.image.ImageCache;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public record Answer(int number, String text, Image image, String region_id) implements JsonSerializable {
     @Override
@@ -17,6 +17,10 @@ public record Answer(int number, String text, Image image, String region_id) imp
         object.addProperty("region_id", region_id);
 
         return object;
+    }
+
+    public Answer createCopy(int newNumber) {
+        return new Answer(newNumber, text, image, region_id);
     }
 
     public static Answer deserialize(JsonElement element) {
@@ -45,6 +49,7 @@ public record Answer(int number, String text, Image image, String region_id) imp
     }
 
     @Override
+    @NotNull
     public String toString() {
         return "Answer{" +
                 "number=" + number +

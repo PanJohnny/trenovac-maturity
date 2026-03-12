@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import me.panjohnny.trenovacmaturity.fs.Archiver;
+import me.panjohnny.trenovacmaturity.fs.MaturitaFile;
 import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
 import me.panjohnny.trenovacmaturity.fx.BaseController;
 
@@ -15,13 +16,17 @@ import me.panjohnny.trenovacmaturity.image.ImageCache;
 import me.panjohnny.trenovacmaturity.model.AnswerSet;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
+import me.panjohnny.trenovacmaturity.model.Training;
 import me.panjohnny.trenovacmaturity.pdf.AnswerSetParser;
 import me.panjohnny.trenovacmaturity.pdf.ExamPDFParser;
+import me.panjohnny.trenovacmaturity.model.TrainingBuilder;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -42,6 +47,9 @@ public class MaturitaApplication extends Application {
     private Exam exam;
     private QuestionAnswerMap questionAnswerMap;
     private AnswerSet answers;
+
+    private TrainingBuilder trainingBuilder;
+    private Training training;
 
     public static final System.Logger LOGGER = System.getLogger(MaturitaApplication.class.getName());
 
@@ -120,7 +128,12 @@ public class MaturitaApplication extends Application {
             if (exam == null) {
                 return;
             }
-            Archiver.createArchive(exam.getMeta(), exam, answers, questionAnswerMap, archivePath.toPath());
+
+            if (training != null) {
+                Archiver.createTrainingArchive(training);
+            } else {
+                Archiver.createArchive(exam.getMeta(), exam, answers, questionAnswerMap, archivePath.toPath());
+            }
         } catch (IOException e) {
             ExceptionHandler.handleError(e, "Failed to save current opened exam");
         }
@@ -136,6 +149,10 @@ public class MaturitaApplication extends Application {
 
     public void homeScreen() {
         changeScene("home-view.fxml");
+    }
+
+    public void trainingOpenExamSelector() {
+        changeScene("training-select-exam-view.fxml");
     }
 
     private void loadingScreen() {
@@ -242,15 +259,78 @@ public class MaturitaApplication extends Application {
         this.answers = null;
         this.questionAnswerMap = null;
         this.assigningInProgress = false;
+        this.training = null;
         ImageCache.getInstance().clear();
     }
 
     @Override
     public void stop() throws Exception {
-        if (exam != null)
-            saveCurrentOpenedExam();
-
         closeExam();
         TemporaryFileSystemManager.cleanup();
+    }
+
+    public void startTrainingCreation(List<File> files) throws IOException {
+        List<MaturitaFile> maturitaFiles = new ArrayList<>();
+        for (File file : files) {
+            maturitaFiles.add(Archiver.loadArchive(file.toPath()));
+        }
+
+        trainingBuilder = new TrainingBuilder(maturitaFiles);
+        trainingBuilder.createTagCache();
+        changeScene("training-create-view.fxml");
+    }
+
+    public TrainingBuilder getTrainingBuilder() {
+        return trainingBuilder;
+    }
+
+    public void openTraining(Training training) {
+        this.training = training;
+        this.trainingBuilder = null;
+        this.exam = training;
+        this.answers = training.getAnswers();
+        this.questionAnswerMap = training.getQaMap();
+
+        homeScreen();
+    }
+
+    public void loadTraining(File file) {
+        loadingScreen();
+        try {
+            if (!assigningInProgress) {
+                TemporaryFileSystemManager.cleanup();
+            }
+        } catch (IOException e) {
+            ExceptionHandler.handleWarning(e, "Failed to clean up temporary file system");
+        }
+        Archiver.loadTrainingAsync(file.toPath()).handleAsync((training, t) -> {
+            if (t != null) {
+                ExceptionHandler.handleSevere(t, "Failed to load exam from .MATURITA file");
+            }
+
+            LOGGER.log(System.Logger.Level.INFO, "Loaded training from .MATURITA file");
+
+            this.openTraining(training);
+
+            return null;
+        });
+    }
+
+    public void startPanic(List<File> files) throws IOException {
+        List<MaturitaFile> maturitaFiles = new ArrayList<>();
+        for (File file : files) {
+            maturitaFiles.add(Archiver.loadArchive(file.toPath()));
+        }
+
+        trainingBuilder = new TrainingBuilder(maturitaFiles);
+        this.training = trainingBuilder.create("Panika!");
+        this.exam = training;
+        this.answers = training.getAnswers();
+        this.questionAnswerMap = training.getQaMap();
+        changeScene("training-panic-view.fxml");
+    }
+
+    public Training getTraining() {
+        return training;
     }
 }

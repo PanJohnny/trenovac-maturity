@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox prefHeight="400.0" prefWidth="600.0" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.ImportController">
+<VBox stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.ImportController">
     <Label alignment="TOP_CENTER" contentDisplay="CENTER" text="Odpovědi naimportovány" VBox.vgrow="ALWAYS">
         <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

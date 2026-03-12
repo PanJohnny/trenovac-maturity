@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 public class Exam extends ArrayList<Question> implements JsonSerializable {
 
@@ -72,5 +71,9 @@ public class Exam extends ArrayList<Question> implements JsonSerializable {
 
     public void setMeta(String meta) {
         this.meta = meta;
+    }
+
+    public void setCurrentQuestionIndex(int currentQuestionIndex) {
+        this.currentQuestionIndex = currentQuestionIndex;
     }
 }

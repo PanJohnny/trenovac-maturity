@@ -15,17 +15,41 @@ public record Question(int number, String text, Image image, String region_id, L
     }
 
     public String getTagString() {
+        if (tags.isEmpty())
+            return "";
         StringBuilder sb = new StringBuilder();
         for (String tag : tags) {
-            sb.append(tag);
+            sb.append(tag).append(", ");
         }
-        return sb.toString();
+        return sb.substring(0, sb.length() - 2);
     }
 
-    public void setQuestions(String s) {
-        String[] questions = s.split("( +),( +)");
+    public Question createCopy(int newNumber) {
+        return new Question(newNumber, text, image, region_id, tags);
+    }
+
+    public void setTags(String s) {
+        String[] questions = s.split(",");
         tags.clear();
-        tags.addAll(List.of(questions));
+        for (String question : questions) {
+            tags.add(question.trim());
+        }
+    }
+
+    public boolean isTagged() {
+        return !getTagString().isEmpty();
+    }
+
+    public boolean isTagged(String tag) {
+        return tags.contains(tag);
+    }
+
+    /** checks if it is tagged with atleast one tag */
+    public boolean isNotTaggedWithAny(List<String> tags) {
+        for (String tag : tags) {
+            if (isTagged(tag)) return false;
+        }
+        return true;
     }
 
     @Override

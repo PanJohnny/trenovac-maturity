@@ -1,6 +1,5 @@
 package me.panjohnny.trenovacmaturity.model;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -37,17 +36,25 @@ public class QuestionAnswerMap extends LinkedHashMap<Question, List<Answer>> imp
 
         JsonObject object = data.getAsJsonObject();
 
+        int addThisToFixOrder = -1;
+
         for (var entry : object.entrySet()) {
             String numStr = entry.getKey();
             JsonArray ansArray = entry.getValue().getAsJsonArray();
 
             try {
                 int questionNumber = Integer.parseInt(numStr);
-                Question q = exam.get(questionNumber - 1);
+                if (questionNumber == 0) {
+                    addThisToFixOrder = 0;
+                }
+                Question q = exam.get(questionNumber + addThisToFixOrder);
                 List<Answer> answers = new ArrayList<>();
                 for (JsonElement el : ansArray) {
                     int answerNumber = el.getAsInt();
-                    answers.add(answerSet.get(answerNumber - 1));
+                    if (answerNumber == 0) {
+                        addThisToFixOrder = 0;
+                    }
+                    answers.add(answerSet.get(answerNumber + addThisToFixOrder));
                 }
 
                 map.put(q, answers);

@@ -1,23 +1,25 @@
 package me.panjohnny.trenovacmaturity.fx;
 
+import atlantafx.base.controls.Popover;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.*;
+import me.panjohnny.trenovacmaturity.TagHelper;
 import me.panjohnny.trenovacmaturity.model.Answer;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
+import me.panjohnny.trenovacmaturity.model.Training;
+import org.controlsfx.control.GridView;
 
 import java.awt.*;
 import java.util.List;
@@ -42,9 +44,6 @@ public class MaturitaController extends BaseController {
 
     @FXML
     private TextField examText;
-
-    @FXML
-    private HBox hboxInfo;
 
     @FXML
     private ProgressBar timeBar;
@@ -100,7 +99,7 @@ public class MaturitaController extends BaseController {
         }
     }
 
-    private void redraw() {
+    protected void redraw() {
         if (exam == null || exam.getCurrentQuestion() == null) {
             application.homeScreen();
             return;
@@ -110,10 +109,6 @@ public class MaturitaController extends BaseController {
         double height = exam.getCurrentQuestion().image().getHeight();
 
         tagInput.setText(exam.getCurrentQuestion().getTagString());
-
-        if (predBox != null) {
-            predBox.setVisible(false);
-        }
 
         int CANVAS_MAX_WIDTH = 1000;
         if (width > CANVAS_MAX_WIDTH) {
@@ -145,24 +140,31 @@ public class MaturitaController extends BaseController {
         answerBox.getChildren().clear();
     }
 
-    private Exam exam;
+    protected Exam exam;
     private Timer timer;
+    protected Training training;
 
     @Override
     public void loadAppData() {
         stopTimer();
 
         exam = application.getExam();
+        training = application.getTraining();
         redraw();
     }
 
-    int timeSeconds = 0;
-    int timeLimitSeconds = 60 * 135; // 135 mimut
+    protected int timeSeconds = 0;
+    protected int timeLimitSeconds = 60 * 135; // 135 mimut
 
     @FXML
     private void startTimer() {
         // ask the user how many minutes they want to set for the timer
-        TextInputDialog dialog = new TextInputDialog("135");
+        String defaultTime = "135";
+        if (training != null) {
+            defaultTime = "15";
+            timeLimitSeconds = 15 * 60;
+        }
+        TextInputDialog dialog = new TextInputDialog(defaultTime);
         dialog.setTitle("Nastavit časovač");
         dialog.setHeaderText("Nastavit časovač");
         dialog.setContentText("Zadejte čas v minutách:");
@@ -184,6 +186,10 @@ public class MaturitaController extends BaseController {
             }
         });
 
+        startTimerCount();
+    }
+
+    protected void startTimerCount() {
         if (timer != null) {
             timer.cancel();
         }
@@ -236,17 +242,6 @@ public class MaturitaController extends BaseController {
         timeBar.getParent().setVisible(false);
     }
 
-
-    @FXML
-    public void closeExam() {
-        Actions.closeExam(application);
-    }
-
-    @FXML
-    public void closeApp() {
-        Actions.closeApplication();
-    }
-
     @FXML
     public void openArchive() {
         Actions.openArchive(application);
@@ -257,50 +252,52 @@ public class MaturitaController extends BaseController {
         Actions.openMeta(application);
     }
 
+    private Popover tagPopover;
+    private GridView<String> tagGrid;
+
     public void tagInputChanged() {
         String value = tagInput.getText();
-        exam.getCurrentQuestion().setQuestions(value);
+        exam.getCurrentQuestion().setTags(value);
+
+        if (tagPopover == null) {
+            tagGrid = new GridView<>();
+            tagGrid.setMinSize(300, 100);
+            tagPopover = new Popover(tagGrid);
+            tagPopover.setTitle("Nabídka štítků");
+            tagPopover.setAutoHide(true);
+
+            tagGrid.setCellFactory(_ -> new TagGridCell(this));
+        }
+
+        tagGrid.getItems().clear();
+        for (String tag : TagHelper.suggest(value)) {
+            tagGrid.getItems().add(tag);
+        }
+
+        if (!tagPopover.isShowing()) {
+            tagPopover.show(tagInput);
+        }
+    }
+
+    public void addTag(String tag) {
+        String inp = tagInput.getText();
+        int lastIndexOfComma = inp.lastIndexOf(',');
+
+        if (lastIndexOfComma > 0) {
+            inp = inp.substring(0, lastIndexOfComma);
+            inp += "," + tag;
+            tagInput.setText(inp + ",");
+        } else {
+            tagInput.setText(tag + ",");
+        }
+
+        tagInput.positionCaret(tagInput.getText().length());
+        tagInputChanged();
     }
 
     @FXML
     public void info() {
         Actions.openInfo(application);
-    }
-
-    private VBox predBox;
-
-    @FXML
-    public void selectTags() {
-        if (predBox != null) {
-            predBox.setVisible(true);
-            return;
-        }
-        predBox = new VBox();
-        hboxInfo.getChildren().add(predBox);
-        predBox.getChildren().addAll(
-                new Label("Matematika"),
-                addTagButton("Číselné obory"),
-                addTagButton("Algebraické výrazy"),
-                addTagButton("Rovnice a nerovnice"),
-                addTagButton("Funkce"),
-                addTagButton("Posloupnosti a finanční matematika"),
-                addTagButton("Planimetrie"),
-                addTagButton("Stereometrie"),
-                addTagButton("Analytická geometrie"),
-                addTagButton("Kombinatorika; pravděpodobnost a statistika"),
-                new Label("Matematika rozšiřující"),
-                addTagButton("Číselné množiny"),
-                addTagButton("Analytická geometrie")
-        );
-    }
-
-    private Button addTagButton(String tag) {
-        Button b = new Button(tag);
-        b.setOnAction((_) -> {
-            tagInput.setText(b.getText() + "," + tagInput.getText());
-            tagInputChanged();
-        });
-        return b;
     }
 
     @FXML

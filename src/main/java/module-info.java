@@ -9,6 +9,7 @@ module me.panjohnny.trenovacmaturity {
     requires atlantafx.base;
     requires org.jetbrains.annotations;
     requires com.google.gson;
+    requires org.apache.commons.text;
 
     opens me.panjohnny.trenovacmaturity to javafx.fxml;
     exports me.panjohnny.trenovacmaturity;
@@ -16,4 +17,5 @@ module me.panjohnny.trenovacmaturity {
     opens me.panjohnny.trenovacmaturity.image to javafx.fxml;
     exports me.panjohnny.trenovacmaturity.fx;
     opens me.panjohnny.trenovacmaturity.fx to javafx.fxml;
+    exports me.panjohnny.trenovacmaturity.model;
 }

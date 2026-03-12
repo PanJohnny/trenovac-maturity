@@ -26,14 +26,10 @@ public class ImportAssignTabController extends BaseController {
     private Label questionTextLabel;
     private Label questionMetadataLabel;
     private Button prevButton;
-    private Button nextButton;
-    private Button doneButton;
-    private Label questionImageLabel;
-    private ImageView questionImageView;
     private FlowPane answersGrid;
     private ScrollPane answersScrollPane;
 
-    private List<Answer> selected;
+    private final List<Answer> selected;
 
     public ImportAssignTabController(Question question, AnswerSet answers, ImportAssignController parentController, List<Answer> selected) {
         this.question = question;
@@ -42,7 +38,7 @@ public class ImportAssignTabController extends BaseController {
         this.selected = selected;
     }
 
-    private Set<Integer> selectedAnswerIndices = new HashSet<>();
+    private final Set<Integer> selectedAnswerIndices = new HashSet<>();
     private int currentQuestionIndex;
 
     @Override
@@ -61,19 +57,16 @@ public class ImportAssignTabController extends BaseController {
         questionTextLabel.setText(question.text());
 
         // Display metadata if available
-        StringBuilder metadata = new StringBuilder();
-        metadata.append(question.tags());
-        questionMetadataLabel.setText(metadata.toString());
+        questionMetadataLabel.setText(String.valueOf(question.tags()));
     }
 
     private void updateAnswersGrid() {
         answersGrid.getChildren().clear();
 
-        for (int i = 0; i < answers.size(); i++) {
-            String answerText = answers.get(i).text();
-            var answerImage = answers.get(i).image();
+        for (Answer answer : answers) {
+            var answerImage = answer.image();
 
-            StackPane answerBox = createAnswerBox(answerImage, answers.get(i).number());
+            StackPane answerBox = createAnswerBox(answerImage, answer.number());
             answersGrid.getChildren().add(answerBox);
         }
 
@@ -105,7 +98,7 @@ public class ImportAssignTabController extends BaseController {
         updateBoxStyle(box, selectedAnswerIndices.contains(index));
 
         // Handle click
-        box.setOnMouseClicked(event -> {
+        box.setOnMouseClicked(_ -> {
             if (selectedAnswerIndices.contains(index)) {
                 selectedAnswerIndices.remove(index);
             } else {
@@ -165,17 +158,6 @@ public class ImportAssignTabController extends BaseController {
         }
     }
 
-    public Set<Integer> getSelectedAnswerIndices() {
-        return new HashSet<>(selectedAnswerIndices);
-    }
-
-    public void setSelectedAnswerIndices(Set<Integer> indices) {
-        this.selectedAnswerIndices = new HashSet<>(indices);
-        if (answersGrid != null) {
-            updateAnswersGrid();
-        }
-    }
-
     public Tab getTab() {
         if (tab == null) {
             tab = new Tab();
@@ -225,10 +207,10 @@ public class ImportAssignTabController extends BaseController {
         questionMetadataLabel.setWrapText(true);
         questionMetadataLabel.setStyle("-fx-text-fill: gray;");
 
-        questionImageLabel = new Label("Obrázek");
+        Label questionImageLabel = new Label("Obrázek");
         questionImageLabel.setWrapText(true);
 
-        questionImageView = new ImageView(question.image());
+        ImageView questionImageView = new ImageView(question.image());
         questionImageView.setFitWidth(400);
         questionImageView.setPreserveRatio(true);
         questionImageLabel.setGraphic(questionImageView);
@@ -244,13 +226,13 @@ public class ImportAssignTabController extends BaseController {
         buttonBox.setAlignment(Pos.CENTER);
 
         prevButton = new Button("Předchozí");
-        prevButton.setOnAction(e -> handlePrevious());
+        prevButton.setOnAction(_ -> handlePrevious());
 
-        nextButton = new Button("Další");
-        nextButton.setOnAction(e -> handleNext());
+        Button nextButton = new Button("Další");
+        nextButton.setOnAction(_ -> handleNext());
 
-        doneButton = new Button("Zavřít a uložit");
-        doneButton.setOnAction(e -> parentController.saveAndClose());
+        Button doneButton = new Button("Zavřít a uložit");
+        doneButton.setOnAction(_ -> parentController.saveAndClose());
 
         buttonBox.getChildren().addAll(prevButton, doneButton, nextButton);
 

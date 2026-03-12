@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Dialog;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
+import me.panjohnny.trenovacmaturity.ExceptionHandler;
 import me.panjohnny.trenovacmaturity.MaturitaApplication;
 
 import java.awt.*;
@@ -54,9 +55,9 @@ public class Actions {
                     desktop.open(file);
                 }
             } catch (IOException | URISyntaxException e) {
-
+                ExceptionHandler.handleWarning(e, "Failed to open file or URL");
             }
-        }else{
+        } else{
             ProcessBuilder processBuilder = new ProcessBuilder();
             try {
                 if (file != null) {
@@ -70,6 +71,7 @@ public class Actions {
                 }
                 processBuilder.start();
             } catch (IOException e) {
+                ExceptionHandler.handleWarning(e, "Failed to open file or URL");
             }
         }
     }
@@ -125,5 +127,26 @@ public class Actions {
         dialog.initOwner(application.getPrimaryStage().getOwner());
         dialog.initModality(Modality.WINDOW_MODAL);
         dialog.showAndWait();
+    }
+
+    public static void openTraining(MaturitaApplication application) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open TRAINING");
+        fileChooser.setInitialDirectory(new File(""));
+        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("MATURITA Files", "*.maturita"));
+        File file = fileChooser.showOpenDialog(null);
+
+        if (file != null) {
+            application.getRetentionHelper().put("lastOpenedTraining", file.getAbsolutePath());
+            application.loadTraining(file);
+        }
+    }
+
+    public static void createTraining(MaturitaApplication application) {
+        application.trainingOpenExamSelector();
+    }
+
+    public static void startPanicMode(MaturitaApplication application) {
+        application.changeScene("training-panic-start-view.fxml");
     }
 }
