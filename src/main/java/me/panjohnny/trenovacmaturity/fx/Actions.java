@@ -6,6 +6,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import me.panjohnny.trenovacmaturity.ExceptionHandler;
 import me.panjohnny.trenovacmaturity.MaturitaApplication;
+import me.panjohnny.trenovacmaturity.View;
 
 import java.awt.*;
 import java.io.File;
@@ -22,8 +23,7 @@ public class Actions {
         File file = fileChooser.showOpenDialog(null);
 
         if (file != null) {
-            application.getRetentionHelper().put("lastOpenedPDF", file.getAbsolutePath());
-            application.loadPDF(file);
+            application.exam().loadPDF(file);
         }
     }
 
@@ -36,7 +36,7 @@ public class Actions {
 
         if (file != null) {
             application.getRetentionHelper().put("lastOpened", file.getAbsolutePath());
-            application.openExamZIP(file);
+            application.exam().openExamZIP(file);
         }
     }
 
@@ -84,7 +84,7 @@ public class Actions {
         File file = fileChooser.showOpenDialog(null);
 
         if (file != null) {
-            application.openAnswerSetPDF(file);
+            application.exam().openAnswerSetPDF(file);
         }
     }
 
@@ -93,17 +93,18 @@ public class Actions {
     }
 
     public static void closeExam(MaturitaApplication application) {
-        application.closeExam();
+        application.saveOpened();
+        application.changeView(View.WELCOME);
     }
 
-    public static void openArchive(MaturitaApplication application) {
-        openFileOrUrl(application.getArchivePath(), null);
+    public static void openArchive(MaturitaApplication application) { // TODO: make this work for training
+        openFileOrUrl(application.exam().getArchivePath(), null);
     }
 
     public static void openMeta(MaturitaApplication application) {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Informace o maturitě");
-        String data = "Název testu: %s%nSoubor:%s".formatted(application.getExam().getMeta(), application.getArchivePath());
+        String data = "Název testu: %s%nSoubor:%s".formatted(application.getExam().getMeta(), application.exam().getArchivePath());
         dialog.setContentText(data);
         dialog.getDialogPane().getButtonTypes().addAll(javafx.scene.control.ButtonType.OK);
         dialog.initOwner(application.getPrimaryStage().getOwner());
@@ -137,8 +138,8 @@ public class Actions {
         File file = fileChooser.showOpenDialog(null);
 
         if (file != null) {
-            application.getRetentionHelper().put("lastOpenedTraining", file.getAbsolutePath());
-            application.loadTraining(file);
+            application.getRetentionHelper().put("lastOpened", file.getAbsolutePath());
+            application.training().loadTraining(file);
         }
     }
 

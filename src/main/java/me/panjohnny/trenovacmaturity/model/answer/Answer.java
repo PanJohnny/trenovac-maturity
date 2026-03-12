@@ -1,9 +1,10 @@
-package me.panjohnny.trenovacmaturity.model;
+package me.panjohnny.trenovacmaturity.model.answer;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import javafx.scene.image.Image;
 import me.panjohnny.trenovacmaturity.image.ImageCache;
+import me.panjohnny.trenovacmaturity.model.JsonSerializable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;

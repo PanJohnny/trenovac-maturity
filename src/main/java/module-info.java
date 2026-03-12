@@ -18,4 +18,12 @@ module me.panjohnny.trenovacmaturity {
     exports me.panjohnny.trenovacmaturity.fx;
     opens me.panjohnny.trenovacmaturity.fx to javafx.fxml;
     exports me.panjohnny.trenovacmaturity.model;
+    exports me.panjohnny.trenovacmaturity.model.answer;
+    exports me.panjohnny.trenovacmaturity.model.training;
+    exports me.panjohnny.trenovacmaturity.fx.training;
+    opens me.panjohnny.trenovacmaturity.fx.training to javafx.fxml;
+    exports me.panjohnny.trenovacmaturity.fx.node;
+    opens me.panjohnny.trenovacmaturity.fx.node to javafx.fxml;
+    exports me.panjohnny.trenovacmaturity.fx.answers;
+    opens me.panjohnny.trenovacmaturity.fx.answers to javafx.fxml;
 }

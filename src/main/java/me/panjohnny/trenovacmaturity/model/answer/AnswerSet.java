@@ -1,9 +1,13 @@
-package me.panjohnny.trenovacmaturity.model;
+package me.panjohnny.trenovacmaturity.model.answer;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.panjohnny.trenovacmaturity.ExceptionHandler;
+import me.panjohnny.trenovacmaturity.model.Exam;
+import me.panjohnny.trenovacmaturity.model.JsonSerializable;
+import me.panjohnny.trenovacmaturity.model.Question;
+import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 
 import java.util.ArrayList;
 import java.util.Comparator;

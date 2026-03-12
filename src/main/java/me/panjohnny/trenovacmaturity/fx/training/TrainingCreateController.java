@@ -1,4 +1,4 @@
-package me.panjohnny.trenovacmaturity.fx;
+package me.panjohnny.trenovacmaturity.fx.training;
 
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
@@ -6,15 +6,16 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import me.panjohnny.trenovacmaturity.ExceptionHandler;
 import me.panjohnny.trenovacmaturity.fs.Archiver;
-import me.panjohnny.trenovacmaturity.model.Training;
-import me.panjohnny.trenovacmaturity.model.TrainingBuilder;
+import me.panjohnny.trenovacmaturity.fx.BaseController;
+import me.panjohnny.trenovacmaturity.model.training.Training;
+import me.panjohnny.trenovacmaturity.model.training.TrainingBuilder;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrainingCreateController extends BaseController{
+public class TrainingCreateController extends BaseController {
     public CheckBox filterEnable;
     public VBox filtersContainer;
     public TextField trainingName;
@@ -23,7 +24,7 @@ public class TrainingCreateController extends BaseController{
 
     @Override
     public void loadAppData() {
-        builder = application.getTrainingBuilder();
+        builder = application.training().getTrainingBuilder();
 
         for (String tag : builder.getTagCache()) {
             CheckBox checkbox = new CheckBox(tag);
@@ -63,6 +64,6 @@ public class TrainingCreateController extends BaseController{
             ExceptionHandler.handleSevere(e, "Could not create training archive.");
         }
 
-        application.openTraining(t);
+        application.training().openTraining(t);
     }
 }

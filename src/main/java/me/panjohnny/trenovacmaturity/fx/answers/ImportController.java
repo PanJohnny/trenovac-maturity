@@ -1,10 +1,11 @@
-package me.panjohnny.trenovacmaturity.fx;
+package me.panjohnny.trenovacmaturity.fx.answers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import me.panjohnny.trenovacmaturity.model.AnswerSet;
+import me.panjohnny.trenovacmaturity.fx.BaseController;
+import me.panjohnny.trenovacmaturity.model.answer.AnswerSet;
 
 import java.io.File;
 
@@ -29,8 +30,8 @@ public class ImportController extends BaseController {
             if (meta != null) {
                 temp.setText(meta);
 
-                temp.setOnAction(event -> {
-                    application.openExamZIP(new File(opened));
+                temp.setOnAction(_ -> {
+                    application.exam().openExamZIP(new File(opened));
                 });
             }
         }

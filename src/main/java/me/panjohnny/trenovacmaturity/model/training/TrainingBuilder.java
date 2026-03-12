@@ -1,6 +1,10 @@
-package me.panjohnny.trenovacmaturity.model;
+package me.panjohnny.trenovacmaturity.model.training;
 
 import me.panjohnny.trenovacmaturity.fs.MaturitaFile;
+import me.panjohnny.trenovacmaturity.model.Exam;
+import me.panjohnny.trenovacmaturity.model.Question;
+import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
+import me.panjohnny.trenovacmaturity.model.answer.Answer;
 
 import java.util.ArrayList;
 import java.util.Collections;

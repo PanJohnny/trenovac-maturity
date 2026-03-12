@@ -1,18 +1,32 @@
-package me.panjohnny.trenovacmaturity.model;
+package me.panjohnny.trenovacmaturity.model.training;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import me.panjohnny.trenovacmaturity.model.Exam;
+import me.panjohnny.trenovacmaturity.model.Question;
+import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
+import me.panjohnny.trenovacmaturity.model.answer.Answer;
+import me.panjohnny.trenovacmaturity.model.answer.AnswerSet;
 
 import java.util.List;
 
 public class Training extends Exam {
     private QuestionAnswerMap qaMap;
     private AnswerSet answers;
+    private boolean temporary;
     public Training(String meta) {
         super(meta);
         qaMap = new QuestionAnswerMap();
         answers = new AnswerSet(meta + " answers");
+    }
+
+    public void markTemporary() {
+        this.temporary = true;
+    }
+
+    public boolean isTemporary() {
+        return temporary;
     }
 
     @Override

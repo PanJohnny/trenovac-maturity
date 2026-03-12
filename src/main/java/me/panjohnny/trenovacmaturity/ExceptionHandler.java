@@ -47,7 +47,7 @@ public class ExceptionHandler {
             alert.setTitle(title);
             alert.setHeaderText(header);
             alert.setContentText(content);
-            alert.showAndWait();
+            alert.show();
         });
     }
 }

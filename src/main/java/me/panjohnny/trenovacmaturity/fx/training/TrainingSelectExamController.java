@@ -1,4 +1,4 @@
-package me.panjohnny.trenovacmaturity.fx;
+package me.panjohnny.trenovacmaturity.fx.training;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.FlowPane;
 import javafx.stage.FileChooser;
 import me.panjohnny.trenovacmaturity.ExceptionHandler;
+import me.panjohnny.trenovacmaturity.fx.BaseController;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,7 +67,7 @@ public class TrainingSelectExamController extends BaseController {
     @FXML
     public void nextStep() {
         try {
-            application.startTrainingCreation(selectedExamFiles);
+            application.training().startTrainingCreation(selectedExamFiles);
         } catch (IOException e) {
             ExceptionHandler.handleError(e, "Training creation failed");
         }

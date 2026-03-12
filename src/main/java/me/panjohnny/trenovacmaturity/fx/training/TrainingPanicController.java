@@ -1,12 +1,13 @@
-package me.panjohnny.trenovacmaturity.fx;
+package me.panjohnny.trenovacmaturity.fx.training;
 
+import me.panjohnny.trenovacmaturity.fx.InExamController;
 import me.panjohnny.trenovacmaturity.model.Question;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TrainingPanicController extends MaturitaController {
+public class TrainingPanicController extends InExamController {
     List<Integer> order;
     int index = 0;
     @Override

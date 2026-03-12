@@ -1,4 +1,4 @@
-package me.panjohnny.trenovacmaturity.fx;
+package me.panjohnny.trenovacmaturity.fx.training;
 
 import javafx.fxml.FXML;
 import me.panjohnny.trenovacmaturity.ExceptionHandler;
@@ -11,7 +11,7 @@ public class TrainingPanicStartController extends TrainingSelectExamController {
     @Override
     public void nextStep() {
         try {
-            application.startPanic(super.selectedExamFiles);
+            application.training().startPanic(super.selectedExamFiles);
         } catch (IOException e) {
             ExceptionHandler.handleError(e, "Training creation failed");
         }

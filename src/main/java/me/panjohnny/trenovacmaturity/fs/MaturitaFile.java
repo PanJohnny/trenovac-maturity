@@ -1,6 +1,6 @@
 package me.panjohnny.trenovacmaturity.fs;
 
-import me.panjohnny.trenovacmaturity.model.AnswerSet;
+import me.panjohnny.trenovacmaturity.model.answer.AnswerSet;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 import org.jetbrains.annotations.Nullable;

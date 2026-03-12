@@ -7,18 +7,23 @@ import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 import me.panjohnny.trenovacmaturity.TagHelper;
-import me.panjohnny.trenovacmaturity.model.Answer;
+import me.panjohnny.trenovacmaturity.View;
+import me.panjohnny.trenovacmaturity.fx.node.TagGridCell;
+import me.panjohnny.trenovacmaturity.model.answer.Answer;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
-import me.panjohnny.trenovacmaturity.model.Training;
+import me.panjohnny.trenovacmaturity.model.training.Training;
 import org.controlsfx.control.GridView;
 
 import java.awt.*;
@@ -26,7 +31,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MaturitaController extends BaseController {
+public class InExamController extends BaseController {
     @FXML
     private Label welcomeText;
 
@@ -101,7 +106,7 @@ public class MaturitaController extends BaseController {
 
     protected void redraw() {
         if (exam == null || exam.getCurrentQuestion() == null) {
-            application.homeScreen();
+            application.changeView(View.WELCOME);
             return;
         }
 
@@ -151,6 +156,19 @@ public class MaturitaController extends BaseController {
         exam = application.getExam();
         training = application.getTraining();
         redraw();
+    }
+
+    @FXML
+    private MenuItem saveMenuItem;
+
+    public void initialize() {
+        KeyCombination save = new KeyCodeCombination(javafx.scene.input.KeyCode.S, KeyCombination.CONTROL_DOWN);
+        saveMenuItem.setAccelerator(save);
+    }
+
+    @FXML
+    public void save() {
+        application.saveOpened();
     }
 
     protected int timeSeconds = 0;

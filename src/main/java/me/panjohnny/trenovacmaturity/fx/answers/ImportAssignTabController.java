@@ -1,4 +1,4 @@
-package me.panjohnny.trenovacmaturity.fx;
+package me.panjohnny.trenovacmaturity.fx.answers;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -6,8 +6,9 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import me.panjohnny.trenovacmaturity.model.Answer;
-import me.panjohnny.trenovacmaturity.model.AnswerSet;
+import me.panjohnny.trenovacmaturity.fx.BaseController;
+import me.panjohnny.trenovacmaturity.model.answer.Answer;
+import me.panjohnny.trenovacmaturity.model.answer.AnswerSet;
 import me.panjohnny.trenovacmaturity.model.Question;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 

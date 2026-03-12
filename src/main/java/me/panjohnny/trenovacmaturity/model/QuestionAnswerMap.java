@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.panjohnny.trenovacmaturity.ExceptionHandler;
+import me.panjohnny.trenovacmaturity.model.answer.Answer;
+import me.panjohnny.trenovacmaturity.model.answer.AnswerSet;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

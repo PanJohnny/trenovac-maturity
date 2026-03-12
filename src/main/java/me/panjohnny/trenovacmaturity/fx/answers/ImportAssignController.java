@@ -1,9 +1,11 @@
-package me.panjohnny.trenovacmaturity.fx;
+package me.panjohnny.trenovacmaturity.fx.answers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TabPane;
-import me.panjohnny.trenovacmaturity.model.Answer;
+import me.panjohnny.trenovacmaturity.View;
+import me.panjohnny.trenovacmaturity.fx.BaseController;
+import me.panjohnny.trenovacmaturity.model.answer.Answer;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class ImportAssignController extends BaseController {
     @Override
     public void loadAppData() {
         // Get exam and answers
-        application.loadQuestionAnswerMap();
+        application.exam().loadQuestionAnswerMap();
         this.tabControllers = new ArrayList<>();
 
         // For each question in the exam, create a new tab
@@ -60,8 +62,8 @@ public class ImportAssignController extends BaseController {
             tabController.modifyMap(map);
         }
 
-        application.saveCurrentOpenedExam();
-        application.homeScreen();
+        application.saveOpened();
+        application.changeView(View.WELCOME);
     }
 
     public void goToPreviousQuestion() {

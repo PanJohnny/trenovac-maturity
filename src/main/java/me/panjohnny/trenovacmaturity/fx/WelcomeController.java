@@ -22,7 +22,7 @@ public class WelcomeController extends BaseController {
                 temp.setText(meta);
 
                 temp.setOnAction(event -> {
-                    application.openExamZIP(new File(opened));
+                    application.exam().openExamZIP(new File(opened));
                 });
             }
         }

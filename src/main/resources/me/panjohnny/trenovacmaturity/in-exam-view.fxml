@@ -8,7 +8,7 @@
 <?import org.kordamp.ikonli.javafx.*?>
 
 <VBox spacing="20.0" xmlns="http://javafx.com/javafx/17.0.12"
-      xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.MaturitaController">
+      xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.panjohnny.trenovacmaturity.fx.InExamController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
     </padding>
@@ -28,6 +28,7 @@
             <MenuItem mnemonicParsing="false" onAction="#createTraining" text="Vytvořit trénink"/>
             <MenuItem mnemonicParsing="false" onAction="#startPanicMode" text="Režim paniky"/>
             <SeparatorMenuItem mnemonicParsing="false"/>
+            <MenuItem mnemonicParsing="false" onAction="#save" text="Uložit" fx:id="saveMenuItem"/>
             <MenuItem mnemonicParsing="false" onAction="#closeExam" text="Zavřít test/trénink"/>
             <MenuItem mnemonicParsing="false" onAction="#closeApp" text="Zavřít okno"/>
         </Menu>

@@ -5,6 +5,9 @@ import com.google.gson.JsonElement;
 import me.panjohnny.trenovacmaturity.MaturitaApplication;
 import me.panjohnny.trenovacmaturity.fx.LoadingController;
 import me.panjohnny.trenovacmaturity.model.*;
+import me.panjohnny.trenovacmaturity.model.answer.Answer;
+import me.panjohnny.trenovacmaturity.model.answer.AnswerSet;
+import me.panjohnny.trenovacmaturity.model.training.Training;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -79,6 +82,9 @@ public class Archiver {
     }
 
     public static void createTrainingArchive(Training training) throws IOException {
+        if (training.isTemporary()) {
+            return;
+        }
         String name = training.getMeta();
         String fileName = name.trim() + ".training.maturita";
 
