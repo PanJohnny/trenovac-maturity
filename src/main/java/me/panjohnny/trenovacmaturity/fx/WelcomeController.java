@@ -3,7 +3,8 @@ package me.panjohnny.trenovacmaturity.fx;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
-import java.awt.*;
+import me.panjohnny.trenovacmaturity.fs.ZIPInfo;
+
 import java.io.File;
 
 public class WelcomeController extends BaseController {
@@ -16,15 +17,17 @@ public class WelcomeController extends BaseController {
 
         if (opened != null) {
             Button temp = (Button) lastOpened.getChildren().getFirst();
-            String meta = application.getZIPMeta(new File(opened));
+            ZIPInfo info = application.getZIPInfo(new File(opened));
 
-            if (meta != null) {
-                temp.setText(meta);
+            temp.setText(info.meta());
 
-                temp.setOnAction(event -> {
+            temp.setOnAction(event -> {
+                if (info.isTraining()) {
+                    application.training().loadTraining(new File(opened));
+                } else {
                     application.exam().openExamZIP(new File(opened));
-                });
-            }
+                }
+            });
         }
     }
 }

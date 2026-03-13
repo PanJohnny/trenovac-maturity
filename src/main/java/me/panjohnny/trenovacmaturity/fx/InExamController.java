@@ -7,6 +7,8 @@ import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.*;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -32,6 +34,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class InExamController extends BaseController {
+    @FXML
+    private MenuBar menuBar;
+
     @FXML
     private Label welcomeText;
 
@@ -155,6 +160,20 @@ public class InExamController extends BaseController {
 
         exam = application.getExam();
         training = application.getTraining();
+
+        if (training != null) {
+            welcomeText.setText("Trénink: " + training.getMeta());
+
+            Menu trainingMenu = new Menu("Trénink");
+            MenuItem exportItem = new MenuItem("Exportovat jako PDF");
+            exportItem.setOnAction(_ -> {
+                application.training().export();
+            });
+            trainingMenu.getItems().add(exportItem);
+
+            menuBar.getMenus().add(1, trainingMenu);
+        }
+
         redraw();
     }
 

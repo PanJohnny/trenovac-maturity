@@ -8,6 +8,7 @@ import me.panjohnny.trenovacmaturity.fs.MaturitaFile;
 import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
 import me.panjohnny.trenovacmaturity.model.training.Training;
 import me.panjohnny.trenovacmaturity.model.training.TrainingBuilder;
+import me.panjohnny.trenovacmaturity.pdf.TrainingExporter;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,7 +20,7 @@ import static me.panjohnny.trenovacmaturity.MaturitaApplication.LOGGER;
 /**
  * Handles everything regarding trainings.
  */
-@ForViews({View.TRAINING_PANIC, View.TRAINING_SELECT_EXAM, View.TRAINING_PANIC_START, View.TRAINING_PANIC, View.IN_EXAM})
+@ForViews({View.TRAINING_PANIC, View.TRAINING_SELECT_EXAM, View.TRAINING_PANIC_START, View.TRAINING_PANIC, View.IN_EXAM, View.TRAINING_CREATE})
 public class TrainingHandler extends Handler {
     private TrainingBuilder trainingBuilder;
 
@@ -43,7 +44,7 @@ public class TrainingHandler extends Handler {
             maturitaFiles.add(Archiver.loadArchive(file.toPath()));
         }
 
-        trainingBuilder = new TrainingBuilder(maturitaFiles);
+        this.trainingBuilder = new TrainingBuilder(maturitaFiles);
         trainingBuilder.createTagCache();
         application.changeView(View.TRAINING_CREATE);
     }
@@ -54,6 +55,7 @@ public class TrainingHandler extends Handler {
 
     public void loadTraining(File file) {
         application.changeView(View.LOADING);
+        archivePath = file;
         try {
             TemporaryFileSystemManager.cleanup();
         } catch (IOException e) {
@@ -97,5 +99,9 @@ public class TrainingHandler extends Handler {
         this.questionAnswerMap = training.getQaMap();
 
         application.changeView(View.IN_EXAM);
+    }
+
+    public void export() {
+        TrainingExporter.createPDF(training);
     }
 }

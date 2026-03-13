@@ -45,7 +45,7 @@ public class Actions {
         openFileOrUrl(null, url);
     }
 
-    private static void openFileOrUrl(File file, String url) {
+    public static void openFileOrUrl(File file, String url) {
         if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)){
             Desktop desktop = Desktop.getDesktop();
             try {
@@ -98,7 +98,7 @@ public class Actions {
     }
 
     public static void openArchive(MaturitaApplication application) { // TODO: make this work for training
-        openFileOrUrl(application.exam().getArchivePath(), null);
+        openFileOrUrl(application.getArchivePath(), null);
     }
 
     public static void openMeta(MaturitaApplication application) {

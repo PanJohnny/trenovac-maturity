@@ -6,6 +6,7 @@ import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 import me.panjohnny.trenovacmaturity.model.answer.AnswerSet;
 import me.panjohnny.trenovacmaturity.model.training.Training;
 
+import java.io.File;
 import java.io.IOException;
 
 public abstract class Handler {
@@ -18,6 +19,7 @@ public abstract class Handler {
     protected QuestionAnswerMap questionAnswerMap;
     protected AnswerSet answers;
     protected Training training;
+    protected File archivePath;
 
     public Handler(MaturitaApplication application) {
         this.application = application;
@@ -35,6 +37,7 @@ public abstract class Handler {
         this.questionAnswerMap = null;
         this.answers = null;
         this.training = null;
+        this.archivePath = null;
 
         this.freeNonDefaults();
     }
@@ -53,5 +56,9 @@ public abstract class Handler {
 
     public Training getTraining() {
         return training;
+    }
+
+    public File getArchivePath() {
+        return archivePath;
     }
 }

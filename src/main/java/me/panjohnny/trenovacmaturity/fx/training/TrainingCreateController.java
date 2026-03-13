@@ -30,6 +30,7 @@ public class TrainingCreateController extends BaseController {
             CheckBox checkbox = new CheckBox(tag);
             filtersContainer.getChildren().add(checkbox);
         }
+
         filtersContainer.setVisible(false);
 
         filterEnable.setOnAction(_ -> filtersContainer.setVisible(filterEnable.isSelected()));

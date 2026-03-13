@@ -7,9 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import me.panjohnny.trenovacmaturity.fs.Archiver;
-import me.panjohnny.trenovacmaturity.fs.MaturitaFile;
 import me.panjohnny.trenovacmaturity.fs.TemporaryFileSystemManager;
+import me.panjohnny.trenovacmaturity.fs.ZIPInfo;
 import me.panjohnny.trenovacmaturity.fx.BaseController;
 
 import me.panjohnny.trenovacmaturity.handler.ExamHandler;
@@ -21,17 +20,12 @@ import me.panjohnny.trenovacmaturity.model.answer.AnswerSet;
 import me.panjohnny.trenovacmaturity.model.Exam;
 import me.panjohnny.trenovacmaturity.model.QuestionAnswerMap;
 import me.panjohnny.trenovacmaturity.model.training.Training;
-import me.panjohnny.trenovacmaturity.pdf.AnswerSetParser;
-import me.panjohnny.trenovacmaturity.pdf.ExamPDFParser;
-import me.panjohnny.trenovacmaturity.model.training.TrainingBuilder;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -63,11 +57,17 @@ public class MaturitaApplication extends Application {
     }
 
     public ExamHandler exam() {
+        if (this.currentHandler == trainingHandler) {
+            trainingHandler.free();
+        }
         this.currentHandler = examHandler;
         return examHandler;
     }
 
     public TrainingHandler training() {
+        if (this.currentHandler == examHandler) {
+            trainingHandler.free();
+        }
         this.currentHandler = trainingHandler;
         return trainingHandler;
     }
@@ -153,13 +153,16 @@ public class MaturitaApplication extends Application {
         changeScene("training-select-exam-view.fxml");
     }
 
-    public String getZIPMeta(File file) {
+    public ZIPInfo getZIPInfo(File file) {
         try {
             if (!Files.exists(file.toPath())) {
                 return null;
             }
             ZipInputStream input = new ZipInputStream(new FileInputStream(file));
             ZipEntry entry;
+
+            String meta = null;
+            boolean isTraining = false;
 
             while ((entry = input.getNextEntry()) != null) {
                 if (entry.getName().equals("meta.txt")) {
@@ -170,10 +173,14 @@ public class MaturitaApplication extends Application {
                     while ((len = input.read(buf)) != -1) {
                         baos.write(buf, 0, len);
                     }
-                    return baos.toString(java.nio.charset.StandardCharsets.UTF_8);
+                    meta = baos.toString(java.nio.charset.StandardCharsets.UTF_8);
+                } else if (entry.getName().equals("training.json")) {
+                    isTraining = true;
                 }
                 input.closeEntry();
             }
+
+            return new ZIPInfo(meta, isTraining);
         } catch (IOException e) {
             ExceptionHandler.handleWarning(e, "Failed to read .MATURITA metadata");
         }
@@ -214,6 +221,14 @@ public class MaturitaApplication extends Application {
         }
 
         return currentHandler.getTraining();
+    }
+
+    public File getArchivePath() {
+        if (currentHandler == null) {
+            throw new IllegalStateException("Illegal state reached: handler not present");
+        }
+
+        return currentHandler.getArchivePath();
     }
 
     @Override

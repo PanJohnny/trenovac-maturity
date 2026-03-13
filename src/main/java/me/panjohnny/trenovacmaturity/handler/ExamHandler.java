@@ -15,7 +15,6 @@ import static me.panjohnny.trenovacmaturity.MaturitaApplication.LOGGER;
 
 @ForViews({View.IN_EXAM, View.ANSWERS_IMPORT, View.ANSWERS_IMPORT_ASSIGN})
 public class ExamHandler extends Handler {
-    private File archivePath;
     private boolean assigningInProgress;
 
     public ExamHandler(MaturitaApplication application) {
@@ -99,15 +98,10 @@ public class ExamHandler extends Handler {
     @Override
     protected void freeNonDefaults() {
         assigningInProgress = false;
-        archivePath = null;
     }
 
     @Override
     public void save() throws IOException {
         Archiver.createArchive(exam.getMeta(), exam, answers, questionAnswerMap, archivePath.toPath());
-    }
-
-    public File getArchivePath() {
-        return archivePath;
     }
 }
