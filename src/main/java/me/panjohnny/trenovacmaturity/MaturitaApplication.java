@@ -42,8 +42,8 @@ public class MaturitaApplication extends Application {
     public static final System.Logger LOGGER = System.getLogger(MaturitaApplication.class.getName());
 
 
-    private TrainingHandler trainingHandler;
-    private ExamHandler examHandler;
+    private final TrainingHandler trainingHandler;
+    private final ExamHandler examHandler;
     private Handler currentHandler;
 
     public MaturitaApplication() {

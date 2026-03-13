@@ -3,7 +3,6 @@ module me.panjohnny.trenovacmaturity {
     requires javafx.fxml;
 
     requires org.controlsfx.controls;
-    requires org.kordamp.ikonli.javafx;
     requires org.apache.pdfbox;
     requires java.desktop;
     requires atlantafx.base;
@@ -26,4 +25,6 @@ module me.panjohnny.trenovacmaturity {
     opens me.panjohnny.trenovacmaturity.fx.node to javafx.fxml;
     exports me.panjohnny.trenovacmaturity.fx.answers;
     opens me.panjohnny.trenovacmaturity.fx.answers to javafx.fxml;
+    exports me.panjohnny.trenovacmaturity.handler;
+    exports me.panjohnny.trenovacmaturity.fs;
 }

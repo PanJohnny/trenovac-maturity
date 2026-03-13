@@ -11,10 +11,7 @@ public class ExceptionHandler {
 
     public static void init() {
         // Set up global exception handler
-        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-            LOGGER.log(Level.ERROR, "Uncaught exception in thread " + thread.getName(), throwable);
-
-        });
+        Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> LOGGER.log(Level.ERROR, "Uncaught exception in thread " + thread.getName(), throwable));
     }
 
     public static void handleSevere(Throwable t, String msg) {

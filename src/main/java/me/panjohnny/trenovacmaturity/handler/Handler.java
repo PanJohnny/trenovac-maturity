@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class Handler {
-    protected MaturitaApplication application;
+    protected final MaturitaApplication application;
 
     /*
      globals

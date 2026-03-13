@@ -166,9 +166,7 @@ public class InExamController extends BaseController {
 
             Menu trainingMenu = new Menu("Trénink");
             MenuItem exportItem = new MenuItem("Exportovat jako PDF");
-            exportItem.setOnAction(_ -> {
-                application.training().export();
-            });
+            exportItem.setOnAction(_ -> application.training().export());
             trainingMenu.getItems().add(exportItem);
 
             menuBar.getMenus().add(1, trainingMenu);
