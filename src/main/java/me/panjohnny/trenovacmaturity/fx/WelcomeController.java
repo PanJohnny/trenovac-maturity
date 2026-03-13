@@ -21,7 +21,7 @@ public class WelcomeController extends BaseController {
 
             temp.setText(info.meta());
 
-            temp.setOnAction(event -> {
+            temp.setOnAction(_ -> {
                 if (info.isTraining()) {
                     application.training().loadTraining(new File(opened));
                 } else {
