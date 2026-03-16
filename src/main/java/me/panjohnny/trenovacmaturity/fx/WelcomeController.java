@@ -19,6 +19,10 @@ public class WelcomeController extends BaseController {
             Button temp = (Button) lastOpened.getChildren().getFirst();
             ZIPInfo info = application.getZIPInfo(new File(opened));
 
+            if (info == null) {
+                return;
+            }
+
             temp.setText(info.meta());
 
             temp.setOnAction(_ -> {
