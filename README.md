@@ -8,6 +8,12 @@ Podporované jsou desktopové operační systémy Windows, Linux a macOS. Ke spu
 
 ![hlavní obrazovka](docs/welcome.png)
 
+## Stažení
+1. Přejděte na stránku releases
+2. Stáhněte nejnovější soubor s příponou `.jar` (např. `trenovac-maturity-1.0.0.jar`)
+3. Ujistěte se, že máte nainstalovanou Javu (verze 25 a vyšší). Pokud ne stáhněte si např. [Temurin JRE 25](https://adoptium.net/temurin/releases/).
+4. Spusťte stažený `.jar` soubor dvojklikem nebo pomocí příkazové řádky: `java -jar trenovac-maturity-1.0.0.jar`
+
 ## Klíčové koncepty
 
 * štítky
