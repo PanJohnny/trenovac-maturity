@@ -46,12 +46,9 @@ jobs:
           fi
           echo "path=$JAR" >> $GITHUB_OUTPUT
           echo "name=$(basename $JAR)" >> $GITHUB_OUTPUT
-      - name: Upload release asset
-        uses: actions/upload-release-asset@v1
+      - uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ${{ steps.artifact.outputs.path }}
-          asset_name: ${{ steps.artifact.outputs.name }}
-          asset_content_type: application/java-archive
+          files: ${{ steps.artifact.outputs.path }}
