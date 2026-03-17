@@ -1,4 +1,4 @@
-![logo](big.svg)
+# ![Trénovač maturity](big.svg)
 
 Tento nástroj slouží jako pomocník pro trénování na maturitní zkoušku zadávané státem (CERMAT). Primárně je určen pro
 maturitu z matematiky. Sám o sobě neposkytuje žádné testy, uživatel si je musí stáhnout sám a načíst jejich PDF do
@@ -82,7 +82,7 @@ Tlačítko zobrazit odpověď by mělo nyní fungovat a zobrazovat správné odp
 
 ## Upozornění
 
-* PDF maturit a derivované soubory (.maturita) podléhají autorským právům instituce CERMAT.
+* PDF maturit a derivované soubory (.maturita) mohou podléhat autorským právům instituce CERMAT.
 * Program není asociován s CERMATem a není oficiálním nástrojem pro přípravu na maturitu.
 * Zdrojový kód je licencovaný pod GPLv3, před použitím se seznamte s licencí. Český překlad
   naleznete [zde](http://www.gnugpl.cz/v3/).
