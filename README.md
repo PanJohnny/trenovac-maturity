@@ -9,6 +9,22 @@ Podporované jsou desktopové operační systémy Windows, Linux a macOS. Ke spu
 ![hlavní obrazovka](docs/welcome.png)
 
 ## Stažení
+
+### Instalační skripty
+
+**Windows**:
+Spusťte tento příkaz v PowerShellu:
+```ps1
+irm https://raw.githubusercontent.com/PanJohnny/trenovac-maturity/master/installer/windows.ps1 | iex
+```
+
+**Linux**:
+Spusťte tento příkaz v terminálu:
+```bash
+curl -s https://raw.githubusercontent.com/PanJohnny/trenovac-maturity/master/installer/linux.sh | bash
+```
+
+### Manuálně (přenosná verze)
 1. Přejděte na stránku releases
 2. Stáhněte nejnovější soubor s příponou `.jar` (např. `trenovac-maturity-1.0.0.jar`)
 3. Ujistěte se, že máte nainstalovanou Javu (verze 25 a vyšší). Pokud ne stáhněte si např. [Temurin JRE 25](https://adoptium.net/temurin/releases/).
