@@ -4,6 +4,7 @@ import atlantafx.base.theme.NordDark;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -123,15 +124,15 @@ public class MaturitaApplication extends Application {
     public void changeScene(String resource) {
         Platform.runLater(() -> {
             FXMLLoader fxmlLoader = new FXMLLoader(MaturitaApplication.class.getResource(resource));
-            Scene scene = null;
+            Parent root = null;
             try {
-                scene = new Scene(fxmlLoader.load());
+                root = fxmlLoader.load();
             } catch (IOException e) {
                 ExceptionHandler.handleSevere(e, "Failed to load scene file");
             }
 
-            assert scene != null;
-            scene.getStylesheets().add(Objects.requireNonNull(Launcher.class.getResource("styles.css")).toExternalForm());
+            assert root != null;
+            root.getStylesheets().add(Objects.requireNonNull(Launcher.class.getResource("styles.css")).toExternalForm());
 
             BaseController controller = fxmlLoader.getController();
             if (controller != null) {
@@ -139,13 +140,19 @@ public class MaturitaApplication extends Application {
                 controller.loadAppData();
             }
 
-            primaryStage.setScene(scene);
+            if (primaryStage.getScene() == null) {
+                primaryStage.setScene(new Scene(root));
+                return;
+            }
+            primaryStage.getScene().setRoot(root);
         });
     }
 
     public void saveOpened() {
+        if (currentHandler == null) { // ignore this state
+            return;
+        }
         try {
-            assert currentHandler != null;
             currentHandler.save();
         } catch (IOException e) {
             ExceptionHandler.handleError(e, "Failed to save current opened exam");

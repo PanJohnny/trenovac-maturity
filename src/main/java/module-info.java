@@ -9,6 +9,8 @@ module me.panjohnny.trenovacmaturity {
     requires org.jetbrains.annotations;
     requires com.google.gson;
     requires org.apache.commons.text;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.carbonicons;
 
     opens me.panjohnny.trenovacmaturity to javafx.fxml;
     exports me.panjohnny.trenovacmaturity;
