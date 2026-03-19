@@ -33,6 +33,7 @@ jobs:
           name: jars
           path: |
             target/*.jar
+            !target/original-*.jar
             !target/*-sources.jar
             !target/*-javadoc.jar
 
