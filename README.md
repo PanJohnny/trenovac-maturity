@@ -4,9 +4,6 @@ Tento nástroj slouží jako pomocník pro trénování na maturitní zkoušku z
 maturitu z matematiky. Sám o sobě neposkytuje žádné testy, uživatel si je musí stáhnout sám a načíst jejich PDF do
 programu. Program z těchto PDF extrahuje otázky a umožní vám je procvičovat, přidávat štítky, vytvářet tréninky a další.
 
-> [!IMPORTANT]
-> Aktuálně oficiální build podporuje pouze linux. Na opravě pracuju.
-
 ![hlavní obrazovka](docs/welcome.png)
 
 ## Instalace
@@ -19,6 +16,9 @@ Instalační skript:
 ```bash
 curl -s https://raw.githubusercontent.com/PanJohnny/trenovac-maturity/master/installer/linux.sh | bash
 ```
+
+> [!NOTE]
+> Oficiálně testované na Linuxu. Na Windows pak okrajově. Mělo by všude fungovat, ale může se stát, že narazíte na nějaké problémy. Pokud ano, neváhejte je nahlásit v issues.
 
 ### Manuálně (přenosná verze)
 1. Přejděte na stránku releases
