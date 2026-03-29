@@ -20,11 +20,20 @@ curl -s https://raw.githubusercontent.com/PanJohnny/trenovac-maturity/master/ins
 > [!NOTE]
 > Oficiálně testované na Linuxu. Na Windows pak okrajově. Mělo by všude fungovat, ale může se stát, že narazíte na nějaké problémy. Pokud ano, neváhejte je nahlásit v issues.
 
-### Manuálně (přenosná verze)
-1. Přejděte na stránku releases
-2. Stáhněte nejnovější soubor s příponou `.jar` (např. `trenovac-maturity-1.0.0.jar`)
-3. Ujistěte se, že máte nainstalovanou Javu (verze 25 a vyšší). Pokud ne stáhněte si např. [Temurin JRE 25](https://adoptium.net/temurin/releases/).
-4. Spusťte stažený `.jar` soubor dvojklikem nebo pomocí příkazové řádky: `java -jar trenovac-maturity-1.0.0.jar`
+### Build ze zdrojového kódu
+Využijte Maven wrapper, který je součástí projektu. Spusťte tento příkaz v kořenové složce projektu:
+
+Linux/MacOS:
+```bash
+./mvnw clean package
+```
+
+Windows:
+```cmd
+./mvnw.cmd clean package
+```
+
+Je potřeba sestavovat na cílové platformě.
 
 ## Klíčové koncepty
 
