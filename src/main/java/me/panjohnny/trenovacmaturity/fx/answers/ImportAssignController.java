@@ -48,7 +48,7 @@ public class ImportAssignController extends BaseController {
             foundDialog.setTitle("Ups... nepovedlo se přiřadit odpověď");
             foundDialog.setContentText("Jedna nebo více otázek nebylo možné automaticky přiřadit k odpovědím. Byla vybrána první taková otázka, kterou je potřeba přiřadit ručně.");
             foundDialog.getDialogPane().getButtonTypes().addAll(javafx.scene.control.ButtonType.OK);
-            foundDialog.initOwner(tabPane.getScene().getWindow());
+            foundDialog.initOwner(application.getPrimaryStage().getScene().getWindow());
             foundDialog.initModality(javafx.stage.Modality.WINDOW_MODAL);
             foundDialog.showAndWait();
         } else {

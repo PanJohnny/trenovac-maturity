@@ -154,6 +154,9 @@ public class InExamController extends BaseController {
     private Timer timer;
     protected Training training;
 
+    @FXML
+    private MenuItem saveMenuItem;
+
     @Override
     public void loadAppData() {
         stopTimer();
@@ -166,21 +169,18 @@ public class InExamController extends BaseController {
 
             Menu trainingMenu = new Menu("Trénink");
             MenuItem exportItem = new MenuItem("Exportovat jako PDF");
-            exportItem.setOnAction(_ -> application.training().export());
+            exportItem.setOnAction(ignored -> application.training().export());
             trainingMenu.getItems().add(exportItem);
 
             menuBar.getMenus().add(1, trainingMenu);
         }
 
+        if (saveMenuItem != null) {
+            KeyCombination save = new KeyCodeCombination(javafx.scene.input.KeyCode.S, KeyCombination.CONTROL_DOWN);
+            saveMenuItem.setAccelerator(save);
+        }
+
         redraw();
-    }
-
-    @FXML
-    private MenuItem saveMenuItem;
-
-    public void initialize() {
-        KeyCombination save = new KeyCodeCombination(javafx.scene.input.KeyCode.S, KeyCombination.CONTROL_DOWN);
-        saveMenuItem.setAccelerator(save);
     }
 
     @FXML
@@ -301,7 +301,7 @@ public class InExamController extends BaseController {
             tagPopover.setTitle("Nabídka štítků");
             tagPopover.setAutoHide(true);
 
-            tagGrid.setCellFactory(_ -> new TagGridCell(this));
+            tagGrid.setCellFactory(ignored -> new TagGridCell(this));
         }
 
         tagGrid.getItems().clear();

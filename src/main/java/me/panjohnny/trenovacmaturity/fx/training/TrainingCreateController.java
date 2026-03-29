@@ -33,7 +33,7 @@ public class TrainingCreateController extends BaseController {
 
         filtersContainer.setVisible(false);
 
-        filterEnable.setOnAction(_ -> filtersContainer.setVisible(filterEnable.isSelected()));
+        filterEnable.setOnAction(ignored -> filtersContainer.setVisible(filterEnable.isSelected()));
 
         trainingName.setText("Trénink " + LocalDate.now());
     }

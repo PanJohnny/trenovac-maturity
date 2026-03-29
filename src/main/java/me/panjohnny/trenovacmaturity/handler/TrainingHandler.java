@@ -35,7 +35,9 @@ public class TrainingHandler extends Handler {
 
     @Override
     public void save() throws IOException {
-        Archiver.createTrainingArchive(training);
+        if (training != null) {
+            Archiver.createTrainingArchive(training);
+        }
     }
 
     public void startTrainingCreation(List<File> files) throws IOException {

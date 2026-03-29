@@ -47,7 +47,7 @@ public class TrainingSelectExamController extends BaseController {
            fileButton.setPadding(new Insets(10));
            fileButton.setMnemonicParsing(false);
            fileButton.getStyleClass().add("linkpane");
-           fileButton.setOnAction(_ -> {
+           fileButton.setOnAction(ignored -> {
                selectedExamFiles.remove(file);
                refreshSelectedExams();
            });
@@ -60,7 +60,7 @@ public class TrainingSelectExamController extends BaseController {
        addButton.setPrefHeight(200);
        addButton.setMnemonicParsing(false);
        addButton.getStyleClass().add("linkpane");
-       addButton.setOnAction(_ -> addFile());
+       addButton.setOnAction(ignored -> addFile());
        selectedExams.getChildren().add(addButton);
     }
 

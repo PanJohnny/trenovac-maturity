@@ -106,7 +106,7 @@ public class MaturitaApplication extends Application {
 
         stage.getIcons().add(new Image(Objects.requireNonNull(MaturitaApplication.class.getResourceAsStream("icon.png"))));
 
-        stage.setOnShown(_ -> stage.centerOnScreen());
+        stage.setOnShown(ignored -> stage.centerOnScreen());
 
         stage.setWidth(width);
         stage.setHeight(height);

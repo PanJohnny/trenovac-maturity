@@ -9,12 +9,13 @@ programu. Program z těchto PDF extrahuje otázky a umožní vám je procvičova
 
 ![hlavní obrazovka](docs/welcome.png)
 
-## Stažení
+## Instalace
 
-### Instalační skripty
+**Installery**:
+Ze stránky releases stáhněte installer.
 
 **Linux**:
-Spusťte tento příkaz v terminálu:
+Instalační skript:
 ```bash
 curl -s https://raw.githubusercontent.com/PanJohnny/trenovac-maturity/master/installer/linux.sh | bash
 ```

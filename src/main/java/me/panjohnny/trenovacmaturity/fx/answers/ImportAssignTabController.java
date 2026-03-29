@@ -99,7 +99,7 @@ public class ImportAssignTabController extends BaseController {
         updateBoxStyle(box, selectedAnswerIndices.contains(index));
 
         // Handle click
-        box.setOnMouseClicked(_ -> {
+        box.setOnMouseClicked(ignored -> {
             if (selectedAnswerIndices.contains(index)) {
                 selectedAnswerIndices.remove(index);
             } else {
@@ -227,13 +227,13 @@ public class ImportAssignTabController extends BaseController {
         buttonBox.setAlignment(Pos.CENTER);
 
         prevButton = new Button("Předchozí");
-        prevButton.setOnAction(_ -> handlePrevious());
+        prevButton.setOnAction(ignored -> handlePrevious());
 
         Button nextButton = new Button("Další");
-        nextButton.setOnAction(_ -> handleNext());
+        nextButton.setOnAction(ignored -> handleNext());
 
         Button doneButton = new Button("Zavřít a uložit");
-        doneButton.setOnAction(_ -> parentController.saveAndClose());
+        doneButton.setOnAction(ignored -> parentController.saveAndClose());
 
         buttonBox.getChildren().addAll(prevButton, doneButton, nextButton);
 
