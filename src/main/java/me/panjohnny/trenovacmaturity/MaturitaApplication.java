@@ -43,6 +43,7 @@ public class MaturitaApplication extends Application {
 
     public static final System.Logger LOGGER = System.getLogger(MaturitaApplication.class.getName());
 
+    private View currentView;
 
     private final TrainingHandler trainingHandler;
     private final ExamHandler examHandler;
@@ -74,8 +75,13 @@ public class MaturitaApplication extends Application {
         return trainingHandler;
     }
 
+    public View getCurrentView() {
+        return currentView;
+    }
+
     public void changeView(View view) {
         changeScene(view.toString());
+        currentView = view;
 
         if (this.currentHandler == null || view == View.LOADING)
             return;

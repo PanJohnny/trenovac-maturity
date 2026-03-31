@@ -2,6 +2,8 @@ package me.panjohnny.trenovacmaturity.fx;
 
 import atlantafx.base.controls.Popover;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
@@ -33,7 +35,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class InExamController extends BaseController {
+public class InExamController extends BaseController implements ChangeListener<Number> {
     @FXML
     private MenuBar menuBar;
 
@@ -120,18 +122,19 @@ public class InExamController extends BaseController {
 
         tagInput.setText(exam.getCurrentQuestion().getTagString());
 
-        int CANVAS_MAX_WIDTH = 1000;
+        final double CANVAS_MAX_WIDTH = application.getPrimaryStage().getWidth()*0.8d;
         if (width > CANVAS_MAX_WIDTH) {
-            double scale = (double) CANVAS_MAX_WIDTH / width;
+            double scale = CANVAS_MAX_WIDTH / width;
             width = CANVAS_MAX_WIDTH;
-            height = (int) (height * scale);
+            height = height * scale;
         }
 
-        int CANVAS_MAX_HEIGHT = 700;
+        final double CANVAS_MAX_HEIGHT = application.getPrimaryStage().getHeight() - 500;
+
         if (height > CANVAS_MAX_HEIGHT) {
-            double scale = (double) CANVAS_MAX_HEIGHT / height;
+            double scale = CANVAS_MAX_HEIGHT / height;
             height = CANVAS_MAX_HEIGHT;
-            width = (int) (width * scale);
+            width = width * scale;
         }
 
         canvas.setWidth(width);
@@ -179,6 +182,9 @@ public class InExamController extends BaseController {
             KeyCombination save = new KeyCodeCombination(javafx.scene.input.KeyCode.S, KeyCombination.CONTROL_DOWN);
             saveMenuItem.setAccelerator(save);
         }
+
+        application.getPrimaryStage().widthProperty().addListener(this);
+        application.getPrimaryStage().heightProperty().addListener(this);
 
         redraw();
     }
@@ -338,5 +344,15 @@ public class InExamController extends BaseController {
     @FXML
     protected void changeName() {
         exam.setMeta(examText.getText());
+    }
+
+    ///  On resize listener
+    @Override
+    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        if (application.getCurrentView() != View.IN_EXAM) {
+            application.getPrimaryStage().widthProperty().removeListener(this);
+            application.getPrimaryStage().heightProperty().removeListener(this);
+        }
+        redraw();
     }
 }
