@@ -49,7 +49,7 @@ jobs:
             --main-jar trenovac-maturity-${{ env.APP_VERSION }}.jar \
             --main-class me.panjohnny.trenovacmaturity.Launcher \
             --app-version "${{ env.APP_VERSION }}" \
-            ${{ matrix.os == 'windows-latest' && '--win-shortcut --win-menu' || '' }}
+            ${{ matrix.os == 'windows-latest' && '--win-shortcut --win-menu --win-dir-chooser --win-per-user-install'  || '' }}
 
       # Linux Specific: Package the app-image into a tar.gz
       - name: Package Linux tar.gz
