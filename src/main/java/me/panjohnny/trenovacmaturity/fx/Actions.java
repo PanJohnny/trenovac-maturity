@@ -115,12 +115,13 @@ public class Actions {
     public static void openInfo(MaturitaApplication application) {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Informace o projektu");
-        dialog.setHeaderText("Trénovač na Maturitu");
+        dialog.setHeaderText("Trénovač maturity");
         dialog.setContentText("""
                 Verze: %s
-                Licence: MIT
+                Licence: GPLv3
+                Autor: PanJohnny
                 
-                Tato aplikace má sloužit k procvičování maturitních otázek v maturitních testech. Pomocí štítků k nim můžete přikládat různé kategorie (např. kategorie příkladů v matematice) a díky tomu se fokusovat na to, co nám nejde.
+                Tento nástroj slouží jako pomocník pro trénování na maturitní zkoušku zadávané státem (CERMAT). Primárně je určen pro maturitu z matematiky. Sám o sobě neposkytuje žádné testy, uživatel si je musí stáhnout sám a načíst jejich PDF do programu. Program z těchto PDF extrahuje otázky a umožní vám je procvičovat, přidávat štítky, vytvářet tréninky a další.
                 
                 Upozornění: Aplikace ani její tvůrci nejsou nijak spojení s CERMAT. Uživatel testy, jenž jsou předmětem autorského práva, dodává sám.
                 """.formatted(MaturitaApplication.VERSION));
