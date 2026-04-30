@@ -39,7 +39,7 @@ public class MaturitaApplication extends Application {
     private Stage primaryStage;
     private final RetentionHelper helper;
 
-    public static final String VERSION = "v1.0.6";
+    public static final String VERSION = "v1.0.5";
 
     public static final System.Logger LOGGER = System.getLogger(MaturitaApplication.class.getName());
 
