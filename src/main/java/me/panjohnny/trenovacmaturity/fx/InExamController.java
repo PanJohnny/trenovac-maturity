@@ -170,12 +170,14 @@ public class InExamController extends BaseController implements ChangeListener<N
         if (training != null) {
             welcomeText.setText("Trénink: " + training.getMeta());
 
-            Menu trainingMenu = new Menu("Trénink");
-            MenuItem exportItem = new MenuItem("Exportovat jako PDF");
-            exportItem.setOnAction(ignored -> application.training().export());
-            trainingMenu.getItems().add(exportItem);
+            if (menuBar != null) {
+                Menu trainingMenu = new Menu("Trénink");
+                MenuItem exportItem = new MenuItem("Exportovat jako PDF");
+                exportItem.setOnAction(ignored -> application.training().export());
+                trainingMenu.getItems().add(exportItem);
 
-            menuBar.getMenus().add(1, trainingMenu);
+                menuBar.getMenus().add(1, trainingMenu);
+            }
         }
 
         if (saveMenuItem != null) {
